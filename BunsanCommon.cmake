@@ -39,6 +39,16 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/include)
 endif()
 
 # plugin functions
+macro(bunsan_install_plugins)
+    foreach(arg ${ARGN})
+        if(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/${arg})
+            install(DIRECTORY ${arg}/ DESTINATION ${CMAKE_ROOT}/Modules/BunsanCmake)
+        else()
+            install(FILES ${arg} DESTINATION ${CMAKE_ROOT}/Modules/BunsanCmake)
+        endif()
+    endforeach()
+endmacro()
+
 macro(bunsan_load_plugins)
     foreach(dir ${ARGN})
         message("Loading plugins from ${dir}")
