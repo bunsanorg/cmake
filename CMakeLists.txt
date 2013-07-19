@@ -10,4 +10,5 @@ cmake_minimum_required(VERSION 2.6)
 include(${CMAKE_SOURCE_DIR}/BunsanCommon.cmake)
 
 install(FILES BunsanCommon.cmake DESTINATION ${CMAKE_ROOT}/Modules)
+install(DIRECTORY Modules/ DESTINATION ${CMAKE_ROOT}/Modules)
 bunsan_install_plugins(BunsanCmake)
