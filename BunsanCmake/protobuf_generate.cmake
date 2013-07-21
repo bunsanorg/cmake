@@ -1,7 +1,7 @@
 # TODO refactoring needed
 function(bunsan_protobuf_generate_cpp)
     set(options)
-    set(one_value_args HEADERS SOURCES INSTALL)
+    set(one_value_args HEADERS SOURCES DESCRIPTOR_SET DESCRIPTOR_SET_FILENAME INSTALL)
     set(multi_value_args PROTOS)
     cmake_parse_arguments(ARG "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
     set(proto_src ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -10,6 +10,17 @@ function(bunsan_protobuf_generate_cpp)
     set(srcs_)
     set(hdrs_)
     set(protos_)
+
+    string(RANDOM descriptor_set_dir)
+    set(descriptor_set_dir ${proto_dst}/${descriptor_set_dir})
+    if(ARG_DESCRIPTOR_SET_FILENAME)
+        set(descriptor_set_ ${ARG_DESCRIPTOR_SET_FILENAME})
+    else()
+        string(RANDOM descriptor_set_)
+        set(descriptor_set_ "descriptor_set_${descriptor_set_}.pb")
+    endif()
+    set(descriptor_set_ ${descriptor_set_dir}/${descriptor_set_})
+
     foreach(proto ${ARG_PROTOS})
         get_filename_component(filename_we ${proto} NAME_WE)
         get_filename_component(dirname ${proto} PATH)
@@ -35,10 +46,20 @@ function(bunsan_protobuf_generate_cpp)
         COMMAND ${CMAKE_COMMAND} -E make_directory ${proto_dst}
     )
     add_custom_command(
-        OUTPUT ${hdrs_} ${srcs_}
-        COMMAND ${PROTOBUF_PROTOC_EXECUTABLE} --cpp_out=${proto_dst} ${proto_paths} ${protos_}
-        DEPENDS ${protos_} ${proto_dst}
+        OUTPUT ${descriptor_set_dir}
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${descriptor_set_dir}
+        DEPENDS ${proto_dst}
+    )
+    add_custom_command(
+        OUTPUT ${hdrs_} ${srcs_} ${descriptor_set_}
+        COMMAND ${PROTOBUF_PROTOC_EXECUTABLE}
+            --cpp_out=${proto_dst} --descriptor_set_out=${descriptor_set_}
+            ${proto_paths} ${protos_}
+        DEPENDS ${protos_} ${proto_dst} ${descriptor_set_dir}
     )
     set(${ARG_SOURCES} ${srcs_} PARENT_SCOPE)
     set(${ARG_HEADERS} ${hdrs_} PARENT_SCOPE)
+    if(ARG_DESCRIPTOR_SET)
+        set(${ARG_DESCRIPTOR_SET} ${descriptor_set_} PARENT_SCOPE)
+    endif()
 endfunction()
