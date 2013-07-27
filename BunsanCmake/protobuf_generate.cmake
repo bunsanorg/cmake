@@ -1,5 +1,7 @@
 # TODO refactoring needed
 function(bunsan_protobuf_generate_cpp)
+    string(SHA1 call_hash "${ARGN}")
+
     set(options)
     set(one_value_args HEADERS SOURCES DESCRIPTOR_SET DESCRIPTOR_SET_FILENAME INSTALL)
     set(multi_value_args PROTOS)
@@ -11,13 +13,11 @@ function(bunsan_protobuf_generate_cpp)
     set(hdrs_)
     set(protos_)
 
-    string(RANDOM descriptor_set_dir)
-    set(descriptor_set_dir ${proto_dst}/${descriptor_set_dir})
+    set(descriptor_set_dir ${proto_dst}/${call_hash})
     if(ARG_DESCRIPTOR_SET_FILENAME)
         set(descriptor_set_ ${ARG_DESCRIPTOR_SET_FILENAME})
     else()
-        string(RANDOM descriptor_set_)
-        set(descriptor_set_ "descriptor_set_${descriptor_set_}.pb")
+        set(descriptor_set_ "descriptor_set_${call_hash}.pb")
     endif()
     set(descriptor_set_ ${descriptor_set_dir}/${descriptor_set_})
 
