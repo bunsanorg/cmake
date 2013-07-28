@@ -5,6 +5,7 @@ macro(bunsan_include_tests)
     endif()
 endmacro()
 
+# exports ${bunsan_tests_sources} and ${bunsan_tests_targets}
 macro(bunsan_tests_project)
     project(${PROJECT_NAME}_tests)
 
@@ -14,7 +15,7 @@ macro(bunsan_tests_project)
 
     bunsan_use_boost(unit_test_framework)
 
-    aux_source_directory(. test_srcs)
+    aux_source_directory(. bunsan_tests_sources)
 
     add_definitions(-DBOOST_TEST_DYN_LINK)
 
@@ -23,12 +24,15 @@ macro(bunsan_tests_project)
         "BUNSAN_BINARY_DIR=${CMAKE_BINARY_DIR}"
     )
 
-    foreach(src ${test_srcs})
+    set(bunsan_tests_targets)
+
+    foreach(src ${bunsan_tests_sources})
         string(REGEX REPLACE "^.*/([^/]+)\\.cpp$" "\\1" trgt ${src})
         add_executable(test_${trgt} ${src})
         target_link_libraries(test_${trgt} ${CMAKE_PROJECT_NAME} ${libraries})
         add_test(${trgt} test_${trgt})
         set_tests_properties(${trgt} PROPERTIES ENVIRONMENT "${test_env}")
+        list(APPEND bunsan_tests_targets ${trgt})
     endforeach()
 
     if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources)
