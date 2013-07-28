@@ -1,5 +1,5 @@
 macro(bunsan_include_tests)
-    if(${ENABLE_TESTS})
+    if(ENABLE_TESTS)
         enable_testing()
         add_subdirectory(tests ${CMAKE_CURRENT_BINARY_DIR}/tests)
     endif()

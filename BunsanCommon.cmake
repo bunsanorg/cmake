@@ -1,14 +1,14 @@
 # compiler
-if(${CMAKE_COMPILER_IS_GNUCXX})
+if(CMAKE_COMPILER_IS_GNUCXX)
     set(gxx_flags "-std=c++11 -Wall -Wextra -Wno-multichar")
-    if(${UNIX})
+    if(UNIX)
         set(gxx_flags "-rdynamic -pthread ${gxx_flags}")
     endif()
     set(CMAKE_CXX_FLAGS_DEBUG "-g ${gxx_flags}")
     set(CMAKE_CXX_FLAGS_RELEASE "-O2 ${gxx_flags}")
 endif()
 
-if(${CMAKE_COMPILER_IS_GNUCC})
+if(CMAKE_COMPILER_IS_GNUCC)
     set(gcc_flags "-std=c11 -Wall -Wextra")
     if(${UNIX})
         set(gcc_flags "-rdynamic -pthread ${gcc_flags}")
@@ -17,7 +17,7 @@ if(${CMAKE_COMPILER_IS_GNUCC})
     set(CMAKE_C_FLAGS_RELEASE "-O2 ${gcc_flags}")
 endif()
 
-if(${CMAKE_COMPILER_IS_GNUCXX} OR ${CMAKE_COMPILER_IS_GNUCC})
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_GNUCC)
     set(linker_flags "-Wl,--no-as-needed") # for bunsan::factory plugins
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${linker_flags}")
     set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${linker_flags}")
