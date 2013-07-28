@@ -1,6 +1,7 @@
 # TODO refactoring needed
 function(bunsan_protobuf_generate_cpp)
-    string(SHA1 call_hash "${ARGN}")
+    # cmake 2.6 does not support hashes
+    string(RANDOM call_hash)
 
     set(options)
     set(one_value_args HEADERS SOURCES DESCRIPTOR_SET DESCRIPTOR_SET_FILENAME INSTALL)
