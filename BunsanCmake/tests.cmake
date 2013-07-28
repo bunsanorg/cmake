@@ -9,7 +9,7 @@ endmacro()
 macro(bunsan_tests_project)
     project(${PROJECT_NAME}_tests)
 
-    cmake_minimum_required(VERSION 2.8)
+    cmake_minimum_required(VERSION 2.6)
 
     message("tests were included")
 
