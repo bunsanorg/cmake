@@ -1,3 +1,5 @@
+set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
+
 macro(bunsan_install_targets)
     install(TARGETS ${ARGN}
         RUNTIME DESTINATION bin
