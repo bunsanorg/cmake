@@ -27,7 +27,7 @@ macro(bunsan_tests_project)
     set(bunsan_tests_targets)
 
     foreach(src ${bunsan_tests_sources})
-        string(REGEX REPLACE "^.*/([^/]+)\\.cpp$" "\\1" trgt ${src})
+        get_filename_component(trgt ${src} NAME_WE)
         add_executable(test_${trgt} ${src})
         target_link_libraries(test_${trgt} ${CMAKE_PROJECT_NAME} ${libraries})
         add_test(${trgt} test_${trgt})
