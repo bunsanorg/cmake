@@ -41,21 +41,13 @@ function(bunsan_protobuf_generate_cpp)
     foreach(proto_path ${includes})
         list(APPEND proto_paths --proto_path=${proto_path})
     endforeach()
-    add_custom_command(
-        OUTPUT ${proto_dst}
-        COMMAND ${CMAKE_COMMAND} -E make_directory ${proto_dst}
-    )
-    add_custom_command(
-        OUTPUT ${descriptor_set_dir}
-        COMMAND ${CMAKE_COMMAND} -E make_directory ${descriptor_set_dir}
-        DEPENDS ${proto_dst}
-    )
+    bunsan_create_directories(${proto_dst} ${descriptor_set_dir})
     add_custom_command(
         OUTPUT ${hdrs_} ${srcs_} ${descriptor_set_}
         COMMAND ${PROTOBUF_PROTOC_EXECUTABLE}
             --cpp_out=${proto_dst} --descriptor_set_out=${descriptor_set_}
             ${proto_paths} ${protos_}
-        DEPENDS ${protos_} ${proto_dst} ${descriptor_set_dir}
+        DEPENDS ${protos_}
     )
     set(${ARG_SOURCES} ${srcs_} PARENT_SCOPE)
     set(${ARG_HEADERS} ${hdrs_} PARENT_SCOPE)
