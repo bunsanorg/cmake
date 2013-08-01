@@ -45,5 +45,6 @@ rm -rf %{buildroot}
 %{_datadir}/cmake/Modules/CMakeParseArguments.cmake
 %{_datadir}/cmake/Modules/FindPackageHandleStandardArgs.cmake
 %{_datadir}/cmake/Modules/FindProtobuf.cmake
+%{_datadir}/cmake/Modules/GNUInstallDirs.cmake
 
 %changelog
