@@ -7,6 +7,10 @@ macro(bunsan_install_targets)
         ARCHIVE DESTINATION lib)
 endmacro()
 
+macro(bunsan_install_programs)
+    install(PROGRAMS ${ARGN} DESTINATION bin)
+endmacro()
+
 macro(bunsan_install_headers)
     install(DIRECTORY include DESTINATION .)
 endmacro()
