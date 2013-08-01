@@ -42,5 +42,8 @@ rm -rf %{buildroot}
 %defattr (-,root,root,-)
 %{_datadir}/cmake/Modules/BunsanCommon.cmake
 %{_datadir}/cmake/Modules/BunsanCmake/*.cmake
+%{_datadir}/cmake/Modules/CMakeParseArguments.cmake
+%{_datadir}/cmake/Modules/FindPackageHandleStandardArgs.cmake
+%{_datadir}/cmake/Modules/FindProtobuf.cmake
 
 %changelog
