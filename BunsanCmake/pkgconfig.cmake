@@ -1,0 +1,7 @@
+macro(bunsan_use_pkgconfig PREFIX)
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(${PREFIX} REQUIRED ${ARGN})
+    link_directories(${${PREFIX}_LIBRARY_DIRS})
+    include_directories(${${PREFIX}_INCLUDE_DIRS})
+    bunsan_use(${${PREFIX}_LIBRARIES})
+endmacro()
