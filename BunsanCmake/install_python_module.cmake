@@ -31,7 +31,8 @@ macro(bunsan_install_python_module_common source_arg)
     else()
         message(SEND_ERROR "Environment is not supported.")
     endif()
-    set(destination ${destination}/${module_path})
+
+    set(module_destination ${destination}/${module_path})
 endmacro()
 
 function(bunsan_install_python_module_target)
@@ -43,5 +44,5 @@ function(bunsan_install_python_module_target)
         PREFIX ""
     )
 
-    install(TARGETS ${ARG_TARGET} DESTINATION ${destination})
+    install(TARGETS ${ARG_TARGET} DESTINATION ${module_destination})
 endfunction()
