@@ -1,7 +1,7 @@
 include(GNUInstallDirs)
 
 if(NOT DEFINED CMAKE_INSTALL_RPATH)
-    set(CMAKE_INSTALL_RPATH "$ORIGIN/../${CMAKE_INSTALL_LIBDIR}" CACHE PATH
+    set(CMAKE_INSTALL_RPATH "$ORIGIN/../${CMAKE_INSTALL_LIBDIR};${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}" CACHE STRING
         "A semicolon-separated list specifying the rpath to use in installed targets (for platforms that support it).")
 endif()
 mark_as_advanced(CMAKE_INSTALL_RPATH)
