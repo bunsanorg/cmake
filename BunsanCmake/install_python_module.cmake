@@ -46,3 +46,9 @@ function(bunsan_install_python_module_target)
 
     install(TARGETS ${ARG_TARGET} DESTINATION ${module_destination})
 endfunction()
+
+function(bunsan_install_python_module_init)
+    bunsan_install_python_module_common(INIT ${ARGN})
+
+    install(FILES ${ARG_INIT} DESTINATION ${destination}/${module} RENAME __init__.py)
+endfunction()
