@@ -1,27 +1,20 @@
-function(bunsan_install_python_module)
+macro(bunsan_install_python_module_common source_arg)
     set(options)
-    set(one_value_args TARGET MODULE)
+    set(one_value_args ${source_arg} MODULE)
     set(multi_value_args)
     cmake_parse_arguments(ARG "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
-    if(NOT ARG_TARGET)
-        message(SEND_ERROR "You must provide TARGET option.")
-    endif()
-    set(target ${ARG_TARGET})
     if(ARG_MODULE)
         set(module ${ARG_MODULE})
     else()
-        set(module ${target})
+        message(SEND_ERROR "MODULE is not set.")
+    endif()
+    if(NOT ARG_${source_arg})
+        message(SEND_ERROR "${source_arg} is not set.")
     endif()
 
     string(REPLACE "." "/" module ${module})
     get_filename_component(module_name ${module} NAME)
     get_filename_component(module_path ${module} PATH)
-
-    set_target_properties(${target}
-        PROPERTIES
-        OUTPUT_NAME ${module_name}
-        PREFIX ""
-    )
 
     list(LENGTH PYTHON_LIBRARIES python_libraries_length)
     if(NOT python_libraries_length EQUAL 1)
@@ -38,6 +31,17 @@ function(bunsan_install_python_module)
     else()
         message(SEND_ERROR "Environment is not supported.")
     endif()
+    set(destination ${destination}/${module_path})
+endmacro()
 
-    install(TARGETS ${target} DESTINATION ${destination}/${module_path})
+function(bunsan_install_python_module_target)
+    bunsan_install_python_module_common(TARGET ${ARGN})
+
+    set_target_properties(${ARG_TARGET}
+        PROPERTIES
+        OUTPUT_NAME ${module_name}
+        PREFIX ""
+    )
+
+    install(TARGETS ${ARG_TARGET} DESTINATION ${destination})
 endfunction()
