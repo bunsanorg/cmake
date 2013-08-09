@@ -183,7 +183,7 @@ SELECT_LIBRARY_CONFIGURATIONS(PYTHON)
 # for historical reasons.
 unset(PYTHON_FOUND)
 
-include(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs28.cmake)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(PythonLibs
                                   REQUIRED_VARS PYTHON_LIBRARIES PYTHON_INCLUDE_DIRS
                                   VERSION_VAR PYTHONLIBS_VERSION_STRING)
