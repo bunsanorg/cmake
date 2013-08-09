@@ -21,12 +21,23 @@ macro(bunsan_install_python_module_common source_arg)
     list(GET python_version_list 1 python_version_minor)
 
     if(UNIX)
-        set(destination ${CMAKE_INSTALL_LIBDIR}/python${python_version_major}.${python_version_minor}/site-packages)
+        set(destination lib/python${python_version_major}.${python_version_minor}/site-packages)
     else()
         message(SEND_ERROR "Environment is not supported.")
     endif()
 
     set(module_destination ${destination}/${module_path})
+
+    string(REPLACE "/" ";" module_destination_list ${module_destination})
+    list(LENGTH module_destination_list length)
+    math(EXPR last "${length} - 1")
+    list(REMOVE_AT module_destination_list last)
+    set(base_rpath "$ORIGIN")
+    foreach(part ${module_destination_list})
+        set(base_rpath "${base_rpath}/..")
+    endforeach()
+
+    set(rpath "${base_rpath};${base_rpath}/../${CMAKE_INSTALL_LIBDIR};${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
 endmacro()
 
 function(bunsan_install_python_module_target)
@@ -36,6 +47,7 @@ function(bunsan_install_python_module_target)
         PROPERTIES
         OUTPUT_NAME ${module_name}
         PREFIX ""
+        INSTALL_RPATH "${rpath}"
     )
 
     install(TARGETS ${ARG_TARGET} DESTINATION ${module_destination})
