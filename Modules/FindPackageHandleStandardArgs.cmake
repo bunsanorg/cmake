@@ -99,6 +99,7 @@
 # (To distribute this file outside of CMake, substitute the full
 #  License text for the above reference.)
 
+get_filename_component(CMAKE_CURRENT_LIST_DIR ${CMAKE_CURRENT_LIST_FILE} PATH)
 include(${CMAKE_CURRENT_LIST_DIR}/FindPackageMessage.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/CMakeParseArguments.cmake)
 
