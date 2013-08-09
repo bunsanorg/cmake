@@ -15,7 +15,7 @@ endfunction()
 
 macro(bunsan_use_python_libs)
     set(Python_ADDITIONAL_VERSIONS ${ARGN})
-    find_package(PythonLibs REQUIRED)
+    find_package(PythonLibs28 REQUIRED)
     bunsan_use(${PYTHON_LIBRARY})
     include_directories(${PYTHON_INCLUDE_DIR})
 endmacro()
