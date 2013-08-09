@@ -1,0 +1,50 @@
+set(BUNSAN_PYTHON1_VERSIONS 1.6 1.5)
+set(BUNSAN_PYTHON2_VERSIONS 2.7 2.6 2.5 2.4 2.3 2.2 2.1 2.0)
+set(BUNSAN_PYTHON3_VERSIONS 3.3 3.2 3.1 3.0)
+
+function(bunsan_not_less_version result minimum)
+    set(result_)
+    foreach(ver ${ARGN})
+        if(minimum VERSION_GREATER ver)
+            break()
+        endif()
+        list(APPEND result_ ${ver})
+    endforeach()
+    set(${result} ${result_} PARENT_SCOPE)
+endfunction()
+
+macro(bunsan_use_python_libs)
+    set(Python_ADDITIONAL_VERSIONS ${ARGN})
+    find_package(PythonLibs REQUIRED)
+    bunsan_use(${PYTHON_LIBRARY})
+    include_directories(${PYTHON_INCLUDE_DIR})
+endmacro()
+
+macro(bunsan_use_python1_libs)
+    bunsan_use_python_libs(${BUNSAN_PYTHON1_VERSIONS})
+endmacro()
+
+macro(bunsan_use_python2_libs)
+    bunsan_use_python_libs(${BUNSAN_PYTHON2_VERSIONS})
+endmacro()
+
+macro(bunsan_use_python3_libs)
+    bunsan_use_python_libs(${BUNSAN_PYTHON3_VERSIONS})
+endmacro()
+
+macro(bunsan_use_python_libs_minimum minimum)
+    bunsan_not_less_version(bunsan_use_python_libs_minimum_versions ${minimum} ${ARGN})
+    bunsan_use_python_libs(${bunsan_use_python_libs_minimum_versions})
+endmacro()
+
+macro(bunsan_use_python1_libs_minimum minimum)
+    bunsan_use_python_libs_minimum(${minimum} ${BUNSAN_PYTHON1_VERSIONS})
+endmacro()
+
+macro(bunsan_use_python2_libs_minimum minimum)
+    bunsan_use_python_libs_minimum(${minimum} ${BUNSAN_PYTHON2_VERSIONS})
+endmacro()
+
+macro(bunsan_use_python3_libs_minimum minimum)
+    bunsan_use_python_libs_minimum(${minimum} ${BUNSAN_PYTHON3_VERSIONS})
+endmacro()
