@@ -51,18 +51,23 @@ function(bunsan_install_python_module_target)
     install(TARGETS ${ARG_TARGET} DESTINATION ${module_destination})
 endfunction()
 
+function(bunsan_install_python_module_compile_one pyfile)
+    string(REPLACE ";" " " pyflags "${ARGN}")
+    install(CODE "
+        set(pyfile \"\$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${pyfile}\")
+        execute_process(
+            COMMAND ${PYTHON_EXECUTABLE} ${pyflags} -m py_compile \${pyfile}
+            RESULT_VARIABLE result
+        )
+        if(NOT result EQUAL 0)
+            message(SEND_ERROR \"Unable to compile \${pyfile}\")
+        endif()
+    ")
+endfunction()
+
 function(bunsan_install_python_module_compile)
     foreach(pyfile ${ARGN})
-        install(CODE "
-            set(pyfile \"\$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${pyfile}\")
-            execute_process(
-                COMMAND ${PYTHON_EXECUTABLE} -OO -m py_compile \${pyfile}
-                RESULT_VARIABLE result
-            )
-            if(NOT result EQUAL 0)
-                message(SEND_ERROR \"Unable to compile \${pyfile}\")
-            endif()
-        ")
+        bunsan_install_python_module_compile_one(${pyfile} -OO)
     endforeach()
 endfunction()
 
