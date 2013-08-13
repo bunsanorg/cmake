@@ -12,7 +12,7 @@
 #
 # The Python_ADDITIONAL_VERSIONS variable can be used to specify a list of
 # version numbers that should be taken into account when searching for Python.
-# You need to set this variable before calling find_package(PythonLibs).
+# You need to set this variable before calling find_package(PythonLibs28).
 #
 # If you'd like to specify the installation of Python to use, you should modify
 # the following cache variables:
@@ -41,16 +41,16 @@ set(_PYTHON1_VERSIONS 1.6 1.5)
 set(_PYTHON2_VERSIONS 2.7 2.6 2.5 2.4 2.3 2.2 2.1 2.0)
 set(_PYTHON3_VERSIONS 3.3 3.2 3.1 3.0)
 
-if(PythonLibs_FIND_VERSION)
-    if(PythonLibs_FIND_VERSION MATCHES "^[0-9]+\\.[0-9]+(\\.[0-9]+.*)?$")
-        string(REGEX REPLACE "^([0-9]+\\.[0-9]+).*" "\\1" _PYTHON_FIND_MAJ_MIN "${PythonLibs_FIND_VERSION}")
+if(PythonLibs28_FIND_VERSION)
+    if(PythonLibs28_FIND_VERSION MATCHES "^[0-9]+\\.[0-9]+(\\.[0-9]+.*)?$")
+        string(REGEX REPLACE "^([0-9]+\\.[0-9]+).*" "\\1" _PYTHON_FIND_MAJ_MIN "${PythonLibs28_FIND_VERSION}")
         string(REGEX REPLACE "^([0-9]+).*" "\\1" _PYTHON_FIND_MAJ "${_PYTHON_FIND_MAJ_MIN}")
         unset(_PYTHON_FIND_OTHER_VERSIONS)
-        if(PythonLibs_FIND_VERSION_EXACT)
-            if(_PYTHON_FIND_MAJ_MIN STREQUAL PythonLibs_FIND_VERSION)
-                set(_PYTHON_FIND_OTHER_VERSIONS "${PythonLibs_FIND_VERSION}")
+        if(PythonLibs28_FIND_VERSION_EXACT)
+            if(_PYTHON_FIND_MAJ_MIN STREQUAL PythonLibs28_FIND_VERSION)
+                set(_PYTHON_FIND_OTHER_VERSIONS "${PythonLibs28_FIND_VERSION}")
             else()
-                set(_PYTHON_FIND_OTHER_VERSIONS "${PythonLibs_FIND_VERSION}" "${_PYTHON_FIND_MAJ_MIN}")
+                set(_PYTHON_FIND_OTHER_VERSIONS "${PythonLibs28_FIND_VERSION}" "${_PYTHON_FIND_MAJ_MIN}")
             endif()
         else()
             foreach(_PYTHON_V ${_PYTHON${_PYTHON_FIND_MAJ}_VERSIONS})
@@ -62,7 +62,7 @@ if(PythonLibs_FIND_VERSION)
         unset(_PYTHON_FIND_MAJ_MIN)
         unset(_PYTHON_FIND_MAJ)
     else()
-        set(_PYTHON_FIND_OTHER_VERSIONS ${_PYTHON${PythonLibs_FIND_VERSION}_VERSIONS})
+        set(_PYTHON_FIND_OTHER_VERSIONS ${_PYTHON${PythonLibs28_FIND_VERSION}_VERSIONS})
     endif()
 else()
     set(_PYTHON_FIND_OTHER_VERSIONS ${_PYTHON3_VERSIONS} ${_PYTHON2_VERSIONS} ${_PYTHON1_VERSIONS})
@@ -184,7 +184,7 @@ SELECT_LIBRARY_CONFIGURATIONS(PYTHON)
 unset(PYTHON_FOUND)
 
 include(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs28.cmake)
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(PythonLibs
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(PythonLibs28
                                   REQUIRED_VARS PYTHON_LIBRARIES PYTHON_INCLUDE_DIRS
                                   VERSION_VAR PYTHONLIBS_VERSION_STRING)
 
