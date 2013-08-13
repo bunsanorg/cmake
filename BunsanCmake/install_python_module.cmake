@@ -16,12 +16,10 @@ macro(bunsan_install_python_module_common source_arg)
     get_filename_component(module_name ${module} NAME)
     get_filename_component(module_path ${module} PATH)
 
-    string(REPLACE "." ";" python_version_list "${PYTHONLIBS_VERSION_STRING}")
-    list(GET python_version_list 0 python_version_major)
-    list(GET python_version_list 1 python_version_minor)
+    set(python_version ${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR})
 
     if(UNIX)
-        set(destination lib/python${python_version_major}.${python_version_minor}/site-packages)
+        set(destination lib/python${python_version}/site-packages)
     else()
         message(SEND_ERROR "Environment is not supported.")
     endif()
@@ -53,8 +51,24 @@ function(bunsan_install_python_module_target)
     install(TARGETS ${ARG_TARGET} DESTINATION ${module_destination})
 endfunction()
 
+macro(bunsan_install_python_module_compile)
+    foreach(pyfile ${ARGN})
+        install(CODE "
+            set(pyfile \"\$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${pyfile}\")
+            execute_process(
+                COMMAND ${PYTHON_EXECUTABLE} -OO -m py_compile \${pyfile}
+                RESULT_VARIABLE result
+            )
+            if(NOT result EQUAL 0)
+                message(SEND_ERROR \"Unable to compile \${pyfile}\")
+            endif()
+        ")
+    endforeach()
+endmacro()
+
 function(bunsan_install_python_module_init)
     bunsan_install_python_module_common(INIT ${ARGN})
 
     install(FILES ${ARG_INIT} DESTINATION ${destination}/${module} RENAME __init__.py)
+    bunsan_install_python_module_compile(${destination}/${module}/__init__.py)
 endfunction()

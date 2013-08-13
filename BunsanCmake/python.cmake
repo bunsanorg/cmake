@@ -13,9 +13,47 @@ function(bunsan_not_less_version result minimum)
     set(${result} ${result_} PARENT_SCOPE)
 endfunction()
 
-macro(bunsan_use_python_libs)
+# find python
+
+macro(bunsan_find_python)
     set(Python_ADDITIONAL_VERSIONS ${ARGN})
     find_package(PythonLibs28 REQUIRED)
+    find_package(PythonInterp28 ${PYTHONLIBS_VERSION_STRING} REQUIRED)
+endmacro()
+
+macro(bunsan_find_python1)
+    bunsan_find_python(${BUNSAN_PYTHON1_VERSIONS})
+endmacro()
+
+macro(bunsan_find_python2)
+    bunsan_find_python(${BUNSAN_PYTHON2_VERSIONS})
+endmacro()
+
+macro(bunsan_find_python3)
+    bunsan_find_python(${BUNSAN_PYTHON3_VERSIONS})
+endmacro()
+
+macro(bunsan_find_python_minimum minimum)
+    bunsan_not_less_version(bunsan_find_python_minimum_versions ${minimum} ${ARGN})
+    bunsan_find_python(${bunsan_find_python_minimum_versions})
+endmacro()
+
+macro(bunsan_find_python1_minimum minimum)
+    bunsan_find_python_minimum(${minimum} ${BUNSAN_PYTHON1_VERSIONS})
+endmacro()
+
+macro(bunsan_find_python2_minimum minimum)
+    bunsan_find_python_minimum(${minimum} ${BUNSAN_PYTHON2_VERSIONS})
+endmacro()
+
+macro(bunsan_find_python3_minimum minimum)
+    bunsan_find_python_minimum(${minimum} ${BUNSAN_PYTHON3_VERSIONS})
+endmacro()
+
+# use python libs
+
+macro(bunsan_use_python_libs)
+    bunsan_find_python(${ARGN})
     bunsan_use(${PYTHON_LIBRARY})
     include_directories(${PYTHON_INCLUDE_DIR})
 endmacro()
