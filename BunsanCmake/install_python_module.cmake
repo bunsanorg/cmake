@@ -51,7 +51,7 @@ function(bunsan_install_python_module_target)
     install(TARGETS ${ARG_TARGET} DESTINATION ${module_destination})
 endfunction()
 
-macro(bunsan_install_python_module_compile)
+function(bunsan_install_python_module_compile)
     foreach(pyfile ${ARGN})
         install(CODE "
             set(pyfile \"\$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${pyfile}\")
@@ -64,7 +64,7 @@ macro(bunsan_install_python_module_compile)
             endif()
         ")
     endforeach()
-endmacro()
+endfunction()
 
 function(bunsan_install_python_module_init)
     bunsan_install_python_module_common(INIT ${ARGN})
