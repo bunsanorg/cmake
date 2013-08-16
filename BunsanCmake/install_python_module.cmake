@@ -51,24 +51,39 @@ function(bunsan_install_python_module_target)
     install(TARGETS ${ARG_TARGET} DESTINATION ${module_destination})
 endfunction()
 
-macro(bunsan_install_python_module_compile)
+function(bunsan_install_python_module_compile_one pyfile)
+    string(REPLACE ";" " " pyflags "${ARGN}")
+    install(CODE "
+        set(pyfile \"\$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${pyfile}\")
+        execute_process(
+            COMMAND ${PYTHON_EXECUTABLE} ${pyflags} -m py_compile \${pyfile}
+            RESULT_VARIABLE result
+        )
+        if(NOT result EQUAL 0)
+            message(SEND_ERROR \"Unable to compile \${pyfile}\")
+        endif()
+    ")
+endfunction()
+
+function(bunsan_install_python_module_compile)
     foreach(pyfile ${ARGN})
-        install(CODE "
-            set(pyfile \"\$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${pyfile}\")
-            execute_process(
-                COMMAND ${PYTHON_EXECUTABLE} -OO -m py_compile \${pyfile}
-                RESULT_VARIABLE result
-            )
-            if(NOT result EQUAL 0)
-                message(SEND_ERROR \"Unable to compile \${pyfile}\")
-            endif()
-        ")
+        if(python_version VERSION_LESS 2.7)
+            bunsan_install_python_module_compile_one(${pyfile})
+        endif()
+        bunsan_install_python_module_compile_one(${pyfile} -OO)
     endforeach()
-endmacro()
+endfunction()
 
 function(bunsan_install_python_module_init)
     bunsan_install_python_module_common(INIT ${ARGN})
 
     install(FILES ${ARG_INIT} DESTINATION ${destination}/${module} RENAME __init__.py)
     bunsan_install_python_module_compile(${destination}/${module}/__init__.py)
+endfunction()
+
+function(bunsan_install_python_module_file)
+    bunsan_install_python_module_common(FILE ${ARGN})
+
+    install(FILES ${ARG_FILE} DESTINATION ${destination}/${module_path} RENAME ${module_name}.py)
+    bunsan_install_python_module_compile(${destination}/${module}.py)
 endfunction()
