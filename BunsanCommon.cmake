@@ -10,7 +10,7 @@ endif()
 
 if(CMAKE_COMPILER_IS_GNUCC)
     set(gcc_flags "-std=c11 -Wall -Wextra")
-    if(${UNIX})
+    if(UNIX)
         set(gcc_flags "-rdynamic -pthread ${gcc_flags}")
     endif()
     set(CMAKE_C_FLAGS_DEBUG "-g ${gcc_flags}")
