@@ -1,5 +1,6 @@
 # compiler
-if(CMAKE_COMPILER_IS_GNUCXX)
+if(CMAKE_CXX_COMPILER_ID STREQUAL GNU OR
+   CMAKE_CXX_COMPILER_ID STREQUAL Clang)
     set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Wextra -Wno-multichar")
     if(UNIX)
         set(CMAKE_CXX_FLAGS "-rdynamic -pthread ${CMAKE_CXX_FLAGS}")
@@ -10,7 +11,8 @@ if(CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS_MINSIZEREL "-Os")
 endif()
 
-if(CMAKE_COMPILER_IS_GNUCC)
+if(CMAKE_C_COMPILER_ID STREQUAL GNU OR
+   CMAKE_C_COMPILER_ID STREQUAL Clang)
     set(CMAKE_C_FLAGS "-std=c11 -Wall -Wextra")
     if(UNIX)
         set(CMAKE_C_FLAGS "-rdynamic -pthread ${CMAKE_C_FLAGS}")
@@ -21,7 +23,10 @@ if(CMAKE_COMPILER_IS_GNUCC)
     set(CMAKE_C_FLAGS_MINSIZEREL "-Os")
 endif()
 
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_GNUCC)
+if(CMAKE_CXX_COMPILER_ID STREQUAL GNU OR
+   CMAKE_CXX_COMPILER_ID STREQUAL Clang OR
+   CMAKE_C_COMPILER_ID STREQUAL GNU OR
+   CMAKE_C_COMPILER_ID STREQUAL Clang)
     set(linker_flags "-Wl,--no-as-needed") # for bunsan::factory plugins
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${linker_flags}")
     set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${linker_flags}")
