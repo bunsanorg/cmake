@@ -27,12 +27,12 @@ macro(bunsan_tests_project_header)
 endmacro()
 
 # updates ${bunsan_tests_targets} and empty ${bunsan_tests_sources}
-macro(bunsan_tests_project_add_test source target)
-    add_executable(test_${target} ${source})
+macro(bunsan_tests_project_add_test target)
+    add_executable(test_${target} ${ARGN})
     target_link_libraries(test_${target} ${CMAKE_PROJECT_NAME} ${libraries})
     add_test(${target} test_${target})
     set_tests_properties(${target} PROPERTIES ENVIRONMENT "${test_env}")
-    list(APPEND bunsan_tests_sources ${source})
+    list(APPEND bunsan_tests_sources ${ARGN})
     list(APPEND bunsan_tests_targets ${target})
 endmacro()
 
@@ -42,7 +42,7 @@ macro(bunsan_tests_project_aux_add_tests)
 
     foreach(source ${bunsan_tests_aux_sources})
         get_filename_component(target ${source} NAME_WE)
-        bunsan_tests_project_add_test(${source} ${target})
+        bunsan_tests_project_add_test(${target} ${source})
     endforeach()
 endmacro()
 
