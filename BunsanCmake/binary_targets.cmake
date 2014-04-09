@@ -19,5 +19,5 @@ function(bunsan_add_cli_targets targets_)
         bunsan_add_executable(${trgt} ${srcs})
     endforeach()
 
-    set(${cli_targets_} ${cli_targets} PARENT_SCOPE)
+    set(${targets_} ${cli_targets} PARENT_SCOPE)
 endfunction()
