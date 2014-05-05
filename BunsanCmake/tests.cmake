@@ -5,7 +5,8 @@ macro(bunsan_include_tests)
     endif()
 endmacro()
 
-# exports empty ${bunsan_tests_targets} and ${bunsan_tests_sources}
+# exports empty ${bunsan_tests_targets},
+# ${bunsan_tests_sources} and ${bunsan_tests}
 macro(bunsan_tests_project_header)
     project(${PROJECT_NAME}_tests)
 
@@ -22,18 +23,32 @@ macro(bunsan_tests_project_header)
         "BUNSAN_BINARY_DIR=${CMAKE_BINARY_DIR}"
     )
 
+    set(bunsan_tests)
     set(bunsan_tests_sources)
     set(bunsan_tests_targets)
 endmacro()
 
-# updates ${bunsan_tests_targets} and empty ${bunsan_tests_sources}
-macro(bunsan_tests_project_add_test target)
-    add_executable(test_${target} ${ARGN})
-    target_link_libraries(test_${target} ${CMAKE_PROJECT_NAME} ${libraries})
-    add_test(${target} test_${target})
-    set_tests_properties(${target} PROPERTIES ENVIRONMENT "${test_env}")
+# updates ${bunsan_tests_targets},
+# ${bunsan_tests_sources} and ${bunsan_tests}
+macro(bunsan_tests_project_add_executable target)
+    add_executable(${target} ${ARGN})
+    target_link_libraries(${target} ${CMAKE_PROJECT_NAME} ${libraries})
     list(APPEND bunsan_tests_sources ${ARGN})
     list(APPEND bunsan_tests_targets ${target})
+endmacro()
+
+# updates ${bunsan_tests}
+macro(bunsan_tests_project_add_custom_test test)
+    add_test(${test} ${ARGN})
+    set_tests_properties(${test} PROPERTIES ENVIRONMENT "${test_env}")
+    list(APPEND bunsan_tests ${test})
+endmacro()
+
+# updates ${bunsan_tests_targets},
+# ${bunsan_tests_sources} and ${bunsan_tests}
+macro(bunsan_tests_project_add_test target)
+    bunsan_tests_project_add_executable(test_${target} ${ARGN})
+    bunsan_tests_project_add_custom_test(${target} test_${target} ${ARGN})
 endmacro()
 
 # updates ${bunsan_tests_targets} and empty ${bunsan_tests_sources}
