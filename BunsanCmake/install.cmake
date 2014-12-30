@@ -1,3 +1,13 @@
+if(EXISTS /etc/arch-release)
+    set(CMAKE_INSTALL_SBINDIR bin CACHE PATH "system admin executables (bin)")
+    set(CMAKE_INSTALL_LIBEXECDIR lib/${PROJECT_NAME}
+        CACHE PATH "program executables (lib/${PROJECT_NAME})")
+    set(CMAKE_INSTALL_LIBDIR lib CACHE PATH "object code libraries (lib)")
+    mark_as_advanced(
+        CMAKE_INSTALL_SBINDIR
+        CMAKE_INSTALL_LIBEXECDIR
+        CMAKE_INSTALL_LIBDIR)
+endif()
 include(GNUInstallDirs)
 
 if(NOT DEFINED CMAKE_INSTALL_RPATH)
