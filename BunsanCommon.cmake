@@ -30,13 +30,12 @@ endif()
 
 include(${CMAKE_SOURCE_DIR}/user-config.cmake OPTIONAL)
 
+# Note: defined as empty string by default.
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build, options are: Debug, Release, RelWithDebInfo and MinSizeRel." FORCE)
 endif()
 
-if(NOT DEFINED ENABLE_TESTS)
-    set(ENABLE_TESTS ON CACHE BOOL "Do you want to enable testing?" FORCE)
-endif()
+set(ENABLE_TESTS ON CACHE BOOL "Do you want to enable testing?")
 
 if(EXISTS ${CMAKE_SOURCE_DIR}/include)
     include_directories(include)

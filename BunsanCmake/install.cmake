@@ -10,10 +10,9 @@ if(EXISTS /etc/arch-release)
 endif()
 include(GNUInstallDirs)
 
-if(NOT DEFINED CMAKE_INSTALL_RPATH)
-    set(CMAKE_INSTALL_RPATH "$ORIGIN/../${CMAKE_INSTALL_LIBDIR};${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}" CACHE STRING
-        "A semicolon-separated list specifying the rpath to use in installed targets (for platforms that support it).")
-endif()
+set(CMAKE_INSTALL_RPATH
+    "$ORIGIN/../${CMAKE_INSTALL_LIBDIR};${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}" CACHE STRING
+    "A semicolon-separated list specifying the rpath to use in installed targets (for platforms that support it).")
 mark_as_advanced(CMAKE_INSTALL_RPATH)
 
 macro(bunsan_install_targets)
