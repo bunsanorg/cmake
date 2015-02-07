@@ -1,6 +1,6 @@
 # compiler
 if(CMAKE_COMPILER_IS_GNUCXX)
-    set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Wextra -Wno-multichar")
+    set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Wpedantic -Wextra -Wno-multichar")
     if(UNIX)
         set(CMAKE_CXX_FLAGS "-rdynamic -pthread ${CMAKE_CXX_FLAGS}")
     endif()
@@ -11,7 +11,7 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCC)
-    set(CMAKE_C_FLAGS "-std=c11 -Wall -Wextra")
+    set(CMAKE_C_FLAGS "-std=c11 -Wall -Wpedantic -Wextra")
     if(UNIX)
         set(CMAKE_C_FLAGS "-rdynamic -pthread ${CMAKE_C_FLAGS}")
     endif()
