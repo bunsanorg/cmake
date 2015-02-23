@@ -2,12 +2,20 @@ project(bunsan_cmake)
 
 include(${CMAKE_SOURCE_DIR}/system-config.cmake OPTIONAL)
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 
 # This project is common dependency.
 # Other bunsan projects should assume that
-# this module is installed system-wide.
-include(${CMAKE_SOURCE_DIR}/BunsanCommon.cmake)
+# this module is loaded with find_package(BunsanCmake).
+include(${CMAKE_SOURCE_DIR}/scripts/module.cmake)
 
-install(FILES BunsanCommon.cmake DESTINATION ${CMAKE_ROOT}/Modules)
-bunsan_install_plugins(BunsanCmake)
+bunsan_bootstrap_module(
+    NAME BunsanCMake
+    TEMPLATE Modules.cmake.in
+    DIRECTORIES scripts/
+    FILES
+        Modules.cmake.in
+        Project.cmake.in
+)
+
+bunsan_install_project()

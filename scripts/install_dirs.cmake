@@ -15,17 +15,8 @@ set(CMAKE_INSTALL_RPATH
     "A semicolon-separated list specifying the rpath to use in installed targets (for platforms that support it).")
 mark_as_advanced(CMAKE_INSTALL_RPATH)
 
-macro(bunsan_install_targets)
-    install(TARGETS ${ARGN}
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
-endmacro()
+set(CMAKE_EXPORT_NO_PACKAGE_REGISTRY YES CACHE BOOL "Do not use package registry (YES)")
 
-macro(bunsan_install_programs)
-    install(PROGRAMS ${ARGN} DESTINATION ${CMAKE_INSTALL_BINDIR})
-endmacro()
-
-macro(bunsan_install_headers)
-    install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-endmacro()
+function(bunsan_get_package_install_path CONFIG NAME)
+    set(${CONFIG} ${CMAKE_INSTALL_LIBDIR}/${NAME} PARENT_SCOPE)
+endfunction()

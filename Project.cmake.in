@@ -1,0 +1,30 @@
+@PACKAGE_INIT@
+
+if(CMAKE_CURRENT_LIST_DIR STREQUAL @CMAKE_CURRENT_BINARY_DIR@)
+    set_and_check(
+        @PROJECT_NAME@_PROJECT_ROOT
+        ${CMAKE_CURRENT_LIST_DIR}
+    )
+    set_and_check(
+        @PROJECT_NAME@_PROJECT_TARGETS_INCLUDE
+        ${CMAKE_CURRENT_LIST_DIR}/@PROJECT_TARGETS_CONFIG@
+    )
+else()
+    set_and_check(
+        @PROJECT_NAME@_PROJECT_ROOT
+        "@PACKAGE_PROJECT_ROOT@"
+    )
+    set_and_check(
+        @PROJECT_NAME@_PROJECT_TARGETS_INCLUDE
+        "@PACKAGE_PROJECT_TARGETS_INCLUDE@"
+    )
+endif()
+
+include(${@PROJECT_NAME@_PROJECT_TARGETS_INCLUDE})
+
+# Import these packages to process dependencies correctly.
+foreach(bunsan_package @BUNSAN_PACKAGE_REGISTRY@)
+    find_package(${bunsan_package} CONFIG REQUIRED)
+endforeach()
+
+check_required_components(@PROJECT_NAME@)
