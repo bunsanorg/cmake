@@ -1,5 +1,5 @@
 macro(bunsan_use)
-    list(APPEND libraries ${ARGN})
+    list(APPEND BUNSAN_LIBRARIES ${ARGN})
 endmacro()
 
 macro(bunsan_use_package package)

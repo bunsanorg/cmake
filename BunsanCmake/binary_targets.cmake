@@ -1,11 +1,11 @@
 function(bunsan_add_executable target)
     add_executable(${target} ${ARGN})
-    target_link_libraries(${target} ${libraries})
+    target_link_libraries(${target} ${BUNSAN_LIBRARIES})
 endfunction()
 
 function(bunsan_add_shared_library target)
     add_library(${target} SHARED ${ARGN})
-    target_link_libraries(${target} ${libraries})
+    target_link_libraries(${target} ${BUNSAN_LIBRARIES})
 endfunction()
 
 function(bunsan_add_cli_targets targets_)

@@ -32,7 +32,7 @@ endmacro()
 # ${bunsan_tests_sources} and ${bunsan_tests}
 macro(bunsan_tests_project_add_executable target)
     add_executable(${target} ${ARGN})
-    target_link_libraries(${target} ${CMAKE_PROJECT_NAME} ${libraries})
+    target_link_libraries(${target} ${CMAKE_PROJECT_NAME} ${BUNSAN_LIBRARIES})
     list(APPEND bunsan_tests_sources ${ARGN})
     list(APPEND bunsan_tests_targets ${target})
 endmacro()
