@@ -50,6 +50,15 @@ function(bunsan_protobuf_get_libraries_proto_paths proto_paths)
     set(${proto_paths} ${proto_paths_} PARENT_SCOPE)
 endfunction()
 
+# bunsan_add_protobuf_cxx_library(
+#     TARGET target-name
+#     INCLUDE_DIRECTORIES some include dirs
+#     LIBRARIES some libraries (targets will be fetched for includes)
+#     PLUGINS plugin1=exe plugin2=exe2
+#     PROTOS *.proto
+#     HEADERS var (list of generated headers)
+#     SOURCES var (list of generated sources)
+# )
 function(bunsan_add_protobuf_cxx_library)
     bunsan_find_package(Protobuf REQUIRED)
 
@@ -60,7 +69,7 @@ function(bunsan_add_protobuf_cxx_library)
         HEADERS SOURCES DESCRIPTOR_SET DESCRIPTOR_SET_FILENAME
         INCLUDE_DIRECTORIES LIBRARIES
     )
-    set(multi_value_args PROTOS)
+    set(multi_value_args PROTOS PLUGINS)
     cmake_parse_arguments(ARG "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
     set(proto_src ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -74,6 +83,14 @@ function(bunsan_add_protobuf_cxx_library)
     elseif(ARG_SHARED)
         set(libtype SHARED)
     endif()
+
+    # plugins
+    set(plugins)
+    foreach(plugin ${ARG_PLUGINS})
+        string(FIND ${plugin} "=" eqpos)
+        string(SUBSTRING ${plugin} 0 ${eqpos} plugin_name)
+        list(APPEND plugins "--plugin=protoc-gen-${plugin}" "--${plugin_name}_out=${proto_dst}")
+    endforeach()
 
     # compose descriptor set
     set(descriptor_set_dir ${proto_dst}/${call_hash})
@@ -116,7 +133,8 @@ function(bunsan_add_protobuf_cxx_library)
     add_custom_command(
         OUTPUT ${hdrs_} ${srcs_} ${descriptor_set_}
         COMMAND ${PROTOBUF_PROTOC_EXECUTABLE}
-            --cpp_out=${proto_dst} --descriptor_set_out=${descriptor_set_}
+            --cpp_out=${proto_dst} ${plugins}
+            --descriptor_set_out=${descriptor_set_}
             ${proto_paths} ${protos_}
         DEPENDS ${protos_}
     )
