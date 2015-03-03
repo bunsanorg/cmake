@@ -58,3 +58,26 @@ endmacro()
 macro(bunsan_install_headers)
     install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 endmacro()
+
+include(GenerateExportHeader)
+
+set(BUNSAN_EXPORT_INCLUDE bunsan_export_include)
+
+function(bunsan_install_export_header target header)
+    set(include_path ${CMAKE_CURRENT_BINARY_DIR}/${BUNSAN_EXPORT_INCLUDE})
+    set(header_path ${include_path}/${header})
+    generate_export_header(${target}
+                           EXPORT_FILE_NAME ${header_path})
+    set_target_properties(
+        ${target}
+        PROPERTIES
+            VISIBILITY_INLINES_HIDDEN ON
+            CXX_VISIBILITY_PRESET hidden
+    )
+    target_include_directories(${target} PRIVATE ${include_path})
+    target_include_directories(${target} PUBLIC
+        INTERFACE
+            $<BUILD_INTERFACE:${include_path}>
+    )
+    install(DIRECTORY ${include_path}/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+endfunction()
