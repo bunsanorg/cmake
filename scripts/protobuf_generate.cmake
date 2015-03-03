@@ -54,6 +54,7 @@ endfunction()
 #     TARGET target-name
 #     INCLUDE_DIRECTORIES some include dirs
 #     LIBRARIES some libraries (targets will be fetched for includes)
+#     EXPORT_MACRO_NAME LIBRARY_EXPORT (dllexport code)
 #     PLUGINS plugin1=exe plugin2=exe2
 #     PROTOS *.proto
 #     HEADERS var (list of generated headers)
@@ -68,6 +69,7 @@ function(bunsan_add_protobuf_cxx_library)
         TARGET
         HEADERS SOURCES DESCRIPTOR_SET DESCRIPTOR_SET_FILENAME
         INCLUDE_DIRECTORIES LIBRARIES
+        EXPORT_MACRO_NAME
     )
     set(multi_value_args PROTOS PLUGINS)
     cmake_parse_arguments(ARG "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
@@ -84,12 +86,18 @@ function(bunsan_add_protobuf_cxx_library)
         set(libtype SHARED)
     endif()
 
+    # cpp parameters
+    set(cpp_params)
+    if(ARG_EXPORT_MACRO_NAME)
+        set(cpp_params "${cpp_params}dllexport_decl=${ARG_EXPORT_MACRO_NAME}:")
+    endif()
+
     # plugins
     set(plugins)
     foreach(plugin ${ARG_PLUGINS})
         string(FIND ${plugin} "=" eqpos)
         string(SUBSTRING ${plugin} 0 ${eqpos} plugin_name)
-        list(APPEND plugins "--plugin=protoc-gen-${plugin}" "--${plugin_name}_out=${proto_dst}")
+        list(APPEND plugins "--plugin=protoc-gen-${plugin}" "--${plugin_name}_out=${cpp_params}${proto_dst}")
     endforeach()
 
     # compose descriptor set
@@ -133,7 +141,7 @@ function(bunsan_add_protobuf_cxx_library)
     add_custom_command(
         OUTPUT ${hdrs_} ${srcs_} ${descriptor_set_}
         COMMAND ${PROTOBUF_PROTOC_EXECUTABLE}
-            --cpp_out=${proto_dst} ${plugins}
+            --cpp_out=${cpp_params}${proto_dst} ${plugins}
             --descriptor_set_out=${descriptor_set_}
             ${proto_paths} ${protos_}
         DEPENDS ${protos_}
