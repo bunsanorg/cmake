@@ -1,3 +1,5 @@
+set(BUILD_SHARED_LIBS ON CACHE BOOL "Build shared libraries")
+
 macro(bunsan_target_defaults target)
     if(EXISTS ${CMAKE_SOURCE_DIR}/include)
         target_include_directories(${target} PRIVATE ${CMAKE_SOURCE_DIR}/include)
