@@ -15,10 +15,12 @@ endmacro()
 
 function(bunsan_add_executable target)
     add_executable(${target} ${ARGN})
+    set_target_properties(${target} PROPERTIES BUNSAN_TARGET ON)
 endfunction()
 
 function(bunsan_add_library target)
     add_library(${target} ${ARGN})
+    set_target_properties(${target} PROPERTIES BUNSAN_TARGET ON)
 endfunction()
 
 function(bunsan_add_shared_library target)

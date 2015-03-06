@@ -1,5 +1,7 @@
 # Import these packages to process dependencies correctly.
-set(BUNSAN_PACKAGE_REGISTRY)
+if(NOT DEFINED BUNSAN_PACKAGE_REGISTRY)
+    set(BUNSAN_PACKAGE_REGISTRY)
+endif()
 
 macro(bunsan_find_package package)
     find_package(${package} REQUIRED ${ARGN})
@@ -17,11 +19,7 @@ macro(bunsan_find_package package)
 endmacro()
 
 macro(bunsan_find_bunsan_package package)
-    #TODO implement components
-    find_package(${package} CONFIG REQUIRED)
-    set(${package}_INCLUDE_DIRS)
-    set(${package}_LIBRARIES ${ARGN})
-
+    find_package(${package} CONFIG REQUIRED COMPONENTS ${ARGN})
     list(APPEND BUNSAN_PACKAGE_REGISTRY ${package})
 endmacro()
 

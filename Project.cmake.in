@@ -22,9 +22,33 @@ endif()
 
 include(${@PROJECT_NAME@_PROJECT_TARGETS_INCLUDE})
 
+set(@PROJECT_NAME@_COMPONENTS @BUNSAN_PROJECT_TARGETS@)
+
 # Import these packages to process dependencies correctly.
 foreach(bunsan_package @BUNSAN_PACKAGE_REGISTRY@)
     find_package(${bunsan_package} CONFIG REQUIRED)
 endforeach()
+
+set_target_properties(
+    ${@PROJECT_NAME@_COMPONENTS}
+    PROPERTIES
+        BUNSAN_TARGET ON
+)
+
+foreach(component ${@PROJECT_NAME@_FIND_COMPONENTS})
+    list(FIND @PROJECT_NAME@_COMPONENTS ${component} pos)
+    set(required_not_found)
+    if(pos EQUAL -1)
+        set(@PROJECT_NAME@_${component}_FOUND OFF)
+    else()
+        set(@PROJECT_NAME@_${component}_FOUND ON)
+    endif()
+    list(LENGTH required_not_found length)
+    if(length GREATER 0)
+        message(SEND_ERROR "Unable to find components: ${required_not_found}")
+    endif()
+endforeach()
+set(@PROJECT_NAME@_INCLUDE_DIRS)
+set(@PROJECT_NAME@_LIBRARIES ${@PROJECT_NAME@_FIND_COMPONENTS})
 
 check_required_components(@PROJECT_NAME@)
