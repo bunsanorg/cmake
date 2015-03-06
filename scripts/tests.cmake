@@ -70,6 +70,7 @@ macro(bunsan_tests_project_add_executable target)
     target_compile_definitions(${target} PRIVATE ${BUNSAN_TESTS_DEFINITIONS})
     target_include_directories(${target} PRIVATE ${BUNSAN_TESTS_INCLUDE_DIRS})
     target_link_libraries(${target} PRIVATE ${BUNSAN_TESTS_LIBRARIES})
+    bunsan_targets_finish_setup(${target})
 
     list(APPEND BUNSAN_TESTS_SOURCES ${ARGN})
     list(APPEND BUNSAN_TESTS_TARGETS ${target})

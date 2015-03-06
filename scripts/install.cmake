@@ -8,6 +8,7 @@ macro(bunsan_install_targets)
     if(${ARGC} GREATER 0)
         set(BUNSAN_NEED_TARGETS_EXPORT YES CACHE INTERNAL "")
     endif()
+    bunsan_targets_finish_setup(${ARGN})
     install(TARGETS ${ARGN}
         EXPORT ${PROJECT_NAME}Targets
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
