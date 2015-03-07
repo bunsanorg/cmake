@@ -15,7 +15,7 @@ macro(bunsan_static_initializer_external_header_name target name)
     set(${name} ${target}_external.hpp)
 endmacro()
 
-function(bunsan_initializer_configure)
+macro(bunsan_initializer_configure_common)
     set(options)
     set(one_value_args EXTERNAL_INCLUDE FUNCTION MODIFIER OUTPUT)
     set(multi_value_args CALLS DEPENDS EXTERN_CALLS)
@@ -42,6 +42,10 @@ function(bunsan_initializer_configure)
         )
     endforeach()
     set(BUNSAN_STATIC_INITIALIZER_BODY "${BUNSAN_STATIC_INITIALIZER_BODY}\n}")
+endmacro()
+
+function(bunsan_initializer_configure)
+    bunsan_initializer_configure_common(${ARGN})
     bunsan_add_configured_file(
         INPUT ${BunsanCMake_MODULE_ROOT}/StaticInitializer.cpp.in
         OUTPUT ${ARG_OUTPUT}
@@ -55,16 +59,21 @@ function(bunsan_initializer_configure)
     )
 endfunction()
 
-# TODO add support for generated files
 function(bunsan_add_static_initializer_self target source)
-    bunsan_static_initializer_name(${target} function)
+    bunsan_static_initializer_name(${target} BUNSAN_STATIC_INITIALIZER_FUNCTION)
     set(source_dir ${CMAKE_CURRENT_BINARY_DIR}/${BUNSAN_STATIC_INITIALIZER_SOURCE})
     set(source_path ${source_dir}/${target}_self.cpp)
-    bunsan_static_initializer_external_header_name(${target} external_name)
-
-    set(calls)
-
-    bunsan_static_initializer_external_name(${target} external_call)
+    set(script_path ${source_dir}/${target}_self.cmake)
+    bunsan_static_initializer_external_header_name(
+        ${target}
+        BUNSAN_STATIC_INITIALIZER_EXTERNAL_HEADER
+    )
+    bunsan_static_initializer_external_name(
+        ${target}
+        BUNSAN_STATIC_INITIALIZER_EXTERNAL_CALL
+    )
+    set(BUNSAN_STATIC_INITIALIZER_OUTPUT ${source_path})
+    set(BUNSAN_STATIC_INITIALIZER_SOURCES)
 
     foreach(source ${ARGN})
         if(NOT IS_ABSOLUTE ${source})
@@ -74,24 +83,22 @@ function(bunsan_add_static_initializer_self target source)
         # skip headers
         if(NOT ext STREQUAL .h AND
            NOT ext STREQUAL .hpp)
-            file(STRINGS ${source} initializers REGEX ${BUNSAN_STATIC_INITIALIZER_REGEX})
-            foreach(initializer ${initializers})
-                string(REGEX REPLACE "^${BUNSAN_STATIC_INITIALIZER_REGEX}$" "\\1"
-                                     call ${initializer})
-                bunsan_static_initializer_name(${call} call)
-                list(APPEND calls ${call})
-            endforeach()
+            list(APPEND BUNSAN_STATIC_INITIALIZER_SOURCES ${source})
         endif()
     endforeach()
 
-    bunsan_initializer_configure(
+    configure_file(
+        ${BunsanCMake_MODULE_ROOT}/AddStaticInitializerSelf.cmake.in
+        ${script_path}
+        @ONLY
+    )
+
+    bunsan_add_script_command(
         OUTPUT ${source_path}
-        MODIFIER "extern \"C\""
-        FUNCTION ${function}
-        EXTERNAL_INCLUDE ${external_name}
-        EXTERN_CALLS ${calls}
-        CALLS ${external_call}
-        DEPENDS ${ARGN} ${source_dir}/${external_name}
+        SCRIPT ${script_path}
+        DEPENDS
+            ${BUNSAN_STATIC_INITIALIZER_SOURCES}
+            ${source_dir}/${BUNSAN_STATIC_INITIALIZER_EXTERNAL_HEADER}
     )
 
     set(${source} ${source_path} PARENT_SCOPE)

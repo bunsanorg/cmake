@@ -14,6 +14,7 @@ bunsan_bootstrap_module(
     TEMPLATE Modules.cmake.in
     DIRECTORIES scripts/
     FILES
+        AddStaticInitializerSelf.cmake.in
         ConfigureFile.cmake.in
         Modules.cmake.in
         Project.cmake.in
