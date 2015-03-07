@@ -1,6 +1,5 @@
 set(BunsanCMake_MODULE_ROOT @BunsanCMake_MODULE_ROOT@)
-include(${BunsanCMake_MODULE_ROOT}/scripts/module.cmake)
-bunsan_load_modules(${BunsanCMake_MODULE_ROOT}/scripts)
+include(${BunsanCMake_MODULE_ROOT}/scripts/static_initializer_common.cmake)
 
 set(calls)
 foreach(source @BUNSAN_STATIC_INITIALIZER_SOURCES@)
