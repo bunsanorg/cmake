@@ -18,13 +18,11 @@ function(bunsan_add_configured_file)
 
     configure_file(${BunsanCMake_MODULE_ROOT}/ConfigureFile.cmake.in ${script_stage_1} @ONLY)
     configure_file(${script_stage_1} ${script_stage_2} @ONLY ESCAPE_QUOTES)
-    add_custom_command(
+    bunsan_add_script_command(
         OUTPUT ${ARG_OUTPUT}
-        COMMAND ${CMAKE_COMMAND} -P ${script_stage_2}
+        SCRIPT ${script_stage_2}
         DEPENDS
-            ${script_stage_2}
             ${ARG_INPUT}
             ${ARG_DEPENDS}
-        VERBATIM
     )
 endfunction()
