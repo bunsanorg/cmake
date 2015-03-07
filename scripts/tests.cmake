@@ -60,7 +60,6 @@ macro(bunsan_tests_project_header)
     bunsan_find_package(Boost unit_test_framework)
     bunsan_tests_include_directories(${Boost_INCLUDE_DIRS})
     bunsan_tests_link_libraries(${Boost_LIBRARIES})
-    bunsan_tests_compile_definitions(BOOST_TEST_DYN_LINK)
 endmacro()
 
 # updates ${BUNSAN_TESTS_TARGETS},
