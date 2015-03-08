@@ -41,9 +41,9 @@ endmacro()
 # exports empty ${bunsan_tests_targets},
 # ${bunsan_tests_sources} and ${BUNSAN_TESTS}
 macro(bunsan_tests_project_header)
-    project(${PROJECT_NAME}_tests)
+    cmake_minimum_required(VERSION 3.0)
 
-    cmake_minimum_required(VERSION 2.8)
+    project(${PROJECT_NAME}_tests)
 
     message("Tests were enabled")
 
