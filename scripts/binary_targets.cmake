@@ -1,7 +1,5 @@
 include(${CMAKE_CURRENT_LIST_DIR}/static_initializer.cmake)
 
-set(BUILD_SHARED_LIBS ON CACHE BOOL "Build shared libraries")
-
 macro(bunsan_targets_finish_setup)
     foreach(target ${ARGN})
         if(EXISTS ${CMAKE_SOURCE_DIR}/include)

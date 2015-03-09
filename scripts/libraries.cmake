@@ -1,16 +1,9 @@
+include(${CMAKE_CURRENT_LIST_DIR}/compiler.cmake)
+
 # Import these packages to process dependencies correctly.
 if(NOT DEFINED BUNSAN_PACKAGE_REGISTRY)
     set(BUNSAN_PACKAGE_REGISTRY)
 endif()
-
-add_definitions(-DBOOST_ALL_NO_LIB)
-if(BUILD_SHARED_LIBS)
-    add_definitions(-DBOOST_ALL_DYN_LINK)
-    set(Boost_USE_STATIC_LIBS OFF)
-else()
-    set(Boost_USE_STATIC_LIBS ON)
-endif()
-set(Boost_USE_MULTITHREADED ON)
 
 macro(bunsan_find_package package)
     find_package(${package} REQUIRED ${ARGN})

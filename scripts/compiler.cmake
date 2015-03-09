@@ -27,11 +27,20 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_GNUCC)
     set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} ${linker_flags}")
 endif()
 
-include(${CMAKE_SOURCE_DIR}/user-config.cmake OPTIONAL)
-
 # Note: defined as empty string by default.
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build, options are: Debug, Release, RelWithDebInfo and MinSizeRel." FORCE)
 endif()
+
+set(BUILD_SHARED_LIBS ON CACHE BOOL "Build shared libraries")
+
+add_definitions(-DBOOST_ALL_NO_LIB)
+if(BUILD_SHARED_LIBS)
+    add_definitions(-DBOOST_ALL_DYN_LINK)
+    set(Boost_USE_STATIC_LIBS OFF)
+else()
+    set(Boost_USE_STATIC_LIBS ON)
+endif()
+set(Boost_USE_MULTITHREADED ON)
 
 set(ENABLE_TESTS ON CACHE BOOL "Do you want to enable testing?")
