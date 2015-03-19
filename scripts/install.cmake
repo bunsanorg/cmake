@@ -2,12 +2,11 @@
 # All dependencies should be listed explicitly.
 include(${CMAKE_CURRENT_LIST_DIR}/install_dirs.cmake)
 
-if(NOT DEFINED BUNSAN_PROJECT_TARGETS)
-    set(BUNSAN_PROJECT_TARGETS)
-endif()
+set(BUNSAN_PROJECT_TARGETS "${BUNSAN_PROJECT_TARGETS}" CACHE INTERNAL "")
 
 macro(bunsan_install_targets)
     list(APPEND BUNSAN_PROJECT_TARGETS ${ARGN})
+    set(BUNSAN_PROJECT_TARGETS "${BUNSAN_PROJECT_TARGETS}" CACHE INTERNAL "")
     bunsan_targets_finish_setup(${ARGN})
     install(TARGETS ${ARGN}
         EXPORT ${PROJECT_NAME}Targets
