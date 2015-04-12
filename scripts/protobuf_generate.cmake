@@ -1,5 +1,6 @@
 # TODO refactoring needed
 include(${CMAKE_CURRENT_LIST_DIR}/install_dirs.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/install_python_module.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/libraries.cmake)
 
 macro(bunsan_protobuf_get_target_includes includes target)
@@ -51,6 +52,11 @@ function(bunsan_protobuf_get_libraries_proto_paths proto_paths)
 endfunction()
 
 # bunsan_add_protobuf_cxx_library(
+#     INSTALL install headers and library
+#     PYTHON also build python library
+#     STATIC build static library
+#     SHARED build shared library
+#
 #     TARGET target-name
 #     INCLUDE_DIRECTORIES some include dirs
 #     LIBRARIES some libraries (targets will be fetched for includes)
@@ -64,10 +70,10 @@ function(bunsan_add_protobuf_cxx_library)
     bunsan_find_package(Protobuf REQUIRED)
 
     string(SHA1 call_hash "${ARGN}")
-    set(options INSTALL STATIC SHARED)
+    set(options INSTALL PYTHON STATIC SHARED)
     set(one_value_args
         TARGET
-        HEADERS SOURCES DESCRIPTOR_SET DESCRIPTOR_SET_FILENAME
+        HEADERS SOURCES PYTHON_SOURCES DESCRIPTOR_SET DESCRIPTOR_SET_FILENAME
         INCLUDE_DIRECTORIES LIBRARIES
         EXPORT_MACRO_NAME
     )
@@ -76,8 +82,9 @@ function(bunsan_add_protobuf_cxx_library)
 
     set(proto_src ${CMAKE_CURRENT_SOURCE_DIR}/include)
     set(proto_dst ${CMAKE_CURRENT_BINARY_DIR}/bunsan_protobuf)
-    set(srcs_)
     set(hdrs_)
+    set(srcs_)
+    set(python_srcs_)
     set(protos_)
 
     if(ARG_STATIC)
@@ -117,12 +124,19 @@ function(bunsan_add_protobuf_cxx_library)
         set(hdr ${proto_dst}/${path_we}.pb.h)
         set(src ${proto_dst}/${path_we}.pb.cc)
         set(prt ${proto_src}/${proto})
+        set(pysrc ${proto_dst}/${path_we}_pb2.py)
         list(APPEND hdrs_ ${hdr})
         list(APPEND srcs_ ${src})
+        if(ARG_PYTHON)
+            list(APPEND python_srcs_ ${pysrc})
+        endif()
         list(APPEND protos_ ${prt})
         if(ARG_INSTALL)
             install(FILES ${hdr}
                     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${dirname})
+            if(ARG_PYTHON)
+                bunsan_install_python_module_file(MODULE ${path_we}_pb2 FILE ${pysrc})
+            endif()
         endif()
     endforeach()
 
@@ -136,12 +150,18 @@ function(bunsan_add_protobuf_cxx_library)
     bunsan_protobuf_get_libraries_proto_paths(proto_paths_ ${ARG_LIBRARIES})
     list(APPEND proto_paths ${proto_paths_})
 
+    # python
+    if(ARG_PYTHON)
+        set(python_args --python_out=${proto_dst})
+    endif()
+
     # generate
     bunsan_create_directories(${proto_dst} ${descriptor_set_dir})
     add_custom_command(
-        OUTPUT ${hdrs_} ${srcs_} ${descriptor_set_}
+        OUTPUT ${hdrs_} ${srcs_} ${python_srcs_} ${descriptor_set_}
         COMMAND ${PROTOBUF_PROTOC_EXECUTABLE}
             --cpp_out=${cpp_params}${proto_dst} ${plugins}
+            ${python_args}
             --descriptor_set_out=${descriptor_set_}
             ${proto_paths} ${protos_}
         DEPENDS ${protos_}
@@ -167,6 +187,9 @@ function(bunsan_add_protobuf_cxx_library)
     endif()
     if(ARG_SOURCES)
         set(${ARG_SOURCES} ${srcs_} PARENT_SCOPE)
+    endif()
+    if(ARG_PYTHON_SOURCES)
+        set(${ARG_PYTHON_SOURCES} ${python_srcs_} PARENT_SCOPE)
     endif()
     if(ARG_DESCRIPTOR_SET)
         set(${ARG_DESCRIPTOR_SET} ${descriptor_set_} PARENT_SCOPE)
