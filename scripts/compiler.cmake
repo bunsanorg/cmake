@@ -1,5 +1,5 @@
 if(CMAKE_COMPILER_IS_GNUCXX)
-    set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Wpedantic -Wextra -Wno-multichar")
+    set(CMAKE_CXX_FLAGS "-std=c++14 -Wall -Wpedantic -Wextra -Wno-multichar")
     if(UNIX)
         set(CMAKE_CXX_FLAGS "-rdynamic ${CMAKE_CXX_FLAGS}")
     endif()
