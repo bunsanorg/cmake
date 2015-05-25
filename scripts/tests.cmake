@@ -1,7 +1,7 @@
 macro(bunsan_include_tests)
     if(ENABLE_TESTS)
         enable_testing()
-        add_subdirectory(tests ${CMAKE_CURRENT_BINARY_DIR}/tests)
+        add_subdirectory(tests)
     endif()
 endmacro()
 
@@ -101,7 +101,7 @@ endmacro()
 
 macro(bunsan_tests_project_footer)
     if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources)
-        add_subdirectory(resources ${CMAKE_CURRENT_BINARY_DIR}/resources)
+        add_subdirectory(resources)
     endif()
 endmacro()
 
