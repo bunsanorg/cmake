@@ -35,23 +35,17 @@ macro(bunsan_tests_use_bunsan_package package)
 endmacro()
 
 macro(bunsan_tests_use_parent_project)
-    bunsan_tests_link_libraries(${CMAKE_PROJECT_NAME})
+    bunsan_tests_link_libraries(${PROJECT_NAME})
 endmacro()
 
 # exports empty ${bunsan_tests_targets},
 # ${bunsan_tests_sources} and ${BUNSAN_TESTS}
 macro(bunsan_tests_project_header)
-    cmake_minimum_required(VERSION 3.0)
-
-    project(${PROJECT_NAME}_tests)
-
     message("Tests were enabled")
-
     set(BUNSAN_TESTS_ENV
         "BUNSAN_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}/.."
         "BUNSAN_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}/.."
     )
-
     set(BUNSAN_TESTS)
     set(BUNSAN_TESTS_SOURCES)
     set(BUNSAN_TESTS_TARGETS)
@@ -85,8 +79,9 @@ endmacro()
 # updates ${BUNSAN_TESTS_TARGETS},
 # ${BUNSAN_TESTS_SOURCES} and ${BUNSAN_TESTS}
 macro(bunsan_tests_project_add_test target)
-    bunsan_tests_project_add_executable(test_${target} ${ARGN})
-    bunsan_tests_project_add_custom_test(${target} test_${target} ${ARGN})
+    bunsan_tests_project_add_executable(${PROJECT_NAME}_test_${target} ${ARGN})
+    set_target_properties(${PROJECT_NAME}_test_${target} PROPERTIES OUTPUT_NAME ${target})
+    bunsan_tests_project_add_custom_test(${target} ${target} ${ARGN})
 endmacro()
 
 # updates ${BUNSAN_TESTS_TARGETS} and empty ${BUNSAN_TESTS_SOURCES}
