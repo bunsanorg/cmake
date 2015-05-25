@@ -48,8 +48,8 @@ macro(bunsan_tests_project_header)
     message("Tests were enabled")
 
     set(BUNSAN_TESTS_ENV
-        "BUNSAN_SOURCE_DIR=${CMAKE_SOURCE_DIR}"
-        "BUNSAN_BINARY_DIR=${CMAKE_BINARY_DIR}"
+        "BUNSAN_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}/.."
+        "BUNSAN_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}/.."
     )
 
     set(BUNSAN_TESTS)

@@ -2,8 +2,8 @@ include(${CMAKE_CURRENT_LIST_DIR}/static_initializer.cmake)
 
 macro(bunsan_targets_finish_setup)
     foreach(target ${ARGN})
-        if(EXISTS ${CMAKE_SOURCE_DIR}/include)
-            target_include_directories(${target} PRIVATE ${CMAKE_SOURCE_DIR}/include)
+        if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/include)
+            target_include_directories(${target} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
             target_include_directories(
                 ${target}
                 INTERFACE

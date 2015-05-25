@@ -144,7 +144,7 @@ function(bunsan_add_protobuf_cxx_library)
     set(proto_paths)
     bunsan_protobuf_append_proto_paths(proto_paths
         ${ARG_INCLUDE_DIRECTORIES}
-        ${CMAKE_SOURCE_DIR}/include # bunsan project layout
+        ${CMAKE_CURRENT_SOURCE_DIR}/include # bunsan project layout
         ${proto_dst}
     )
     bunsan_protobuf_get_libraries_proto_paths(proto_paths_ ${ARG_LIBRARIES})
