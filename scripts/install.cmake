@@ -2,11 +2,20 @@
 # All dependencies should be listed explicitly.
 include(${CMAKE_CURRENT_LIST_DIR}/install_dirs.cmake)
 
-set(BUNSAN_PROJECT_TARGETS "${BUNSAN_PROJECT_TARGETS}" CACHE INTERNAL "")
+set(BUNSAN_${PROJECT_NAME}_TARGETS "${BUNSAN_${PROJECT_NAME}_TARGETS}" CACHE INTERNAL "")
+
+function(bunsan_install_register_targets)
+    foreach(target ${ARGN})
+        list(FIND BUNSAN_${PROJECT_NAME}_TARGETS ${target} pos)
+        if(pos EQUAL -1)
+            list(APPEND BUNSAN_${PROJECT_NAME}_TARGETS ${target})
+            set(BUNSAN_${PROJECT_NAME}_TARGETS "${BUNSAN_${PROJECT_NAME}_TARGETS}" CACHE INTERNAL "")
+        endif()
+    endforeach()
+endfunction()
 
 macro(bunsan_install_targets)
-    list(APPEND BUNSAN_PROJECT_TARGETS ${ARGN})
-    set(BUNSAN_PROJECT_TARGETS "${BUNSAN_PROJECT_TARGETS}" CACHE INTERNAL "")
+    bunsan_install_register_targets(${ARGN})
     bunsan_targets_finish_setup(${ARGN})
     install(TARGETS ${ARGN}
         EXPORT ${PROJECT_NAME}Targets
@@ -17,7 +26,7 @@ endmacro()
 
 include(CMakePackageConfigHelpers)
 function(bunsan_install_project)
-    list(LENGTH BUNSAN_PROJECT_TARGETS length)
+    list(LENGTH BUNSAN_${PROJECT_NAME}_TARGETS length)
     if(length GREATER 0)
         set(need_export ON)
     else()
