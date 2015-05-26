@@ -34,7 +34,11 @@ function(bunsan_install_module_)
     install(FILES ${MODULE_FILES} DESTINATION ${MODULE_ROOT})
     install(FILES ${MODULE_SCRIPTS} DESTINATION ${MODULE_SCRIPTS_DIR})
 
-    bunsan_load_modules(${MODULE_DIRECTORIES} ${MODULE_SCIPTS})
+    configure_file(
+        ModuleBuiltin.cmake.in ${MODULE_NAME}Builtin.cmake
+        @ONLY
+    )
+    include(${CMAKE_CURRENT_BINARY_DIR}/${MODULE_NAME}Builtin.cmake)
 
     # local exports
     file(COPY ${MODULE_DIRECTORIES} ${MODULE_SCRIPTS}
@@ -49,7 +53,7 @@ function(bunsan_bootstrap_module)
 endfunction()
 
 function(bunsan_install_module)
-    bunsan_install_module_(TEMPLATE ${BunsanCMake_MODULE_ROOT}/Modules.cmake.in ${ARGN})
+    bunsan_install_module_(TEMPLATE ${BunsanCMake_MODULE_ROOT}/Module.cmake.in ${ARGN})
 endfunction()
 
 macro(bunsan_load_module_scripts)

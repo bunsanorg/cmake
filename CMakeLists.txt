@@ -11,12 +11,13 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/scripts/module.cmake)
 
 bunsan_bootstrap_module(
     NAME BunsanCMake
-    TEMPLATE Modules.cmake.in
+    TEMPLATE Module.cmake.in
     DIRECTORIES scripts/
     FILES
         AddStaticInitializerSelf.cmake.in
         ConfigureFile.cmake.in
-        Modules.cmake.in
+        Module.cmake.in
+        ModuleBuiltin.cmake.in
         Project.cmake.in
         StaticInitializer.cpp.in
         StaticInitializerCall.cpp.in
