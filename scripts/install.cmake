@@ -38,6 +38,7 @@ function(bunsan_install_project)
         set(PROJECT_MODULE_ROOT ${BUNSAN_CMAKE_SCRIPTS_DIR}/..)
 
         bunsan_get_package_install_path(PROJECT_ROOT ${PROJECT_NAME})
+        set(PROJECT_COMPONENTS ${BUNSAN_${PROJECT_NAME}_TARGETS})
         set(PROJECT_CONFIG ${PROJECT_NAME}Config.cmake)
         set(PROJECT_TARGETS ${PROJECT_NAME}Targets)
         set(PROJECT_TARGETS_CONFIG ${PROJECT_TARGETS}.cmake)

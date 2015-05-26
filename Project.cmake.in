@@ -22,7 +22,7 @@ endif()
 
 include(${@PROJECT_NAME@_PROJECT_TARGETS_INCLUDE})
 
-set(@PROJECT_NAME@_COMPONENTS @BUNSAN_PROJECT_TARGETS@)
+set(@PROJECT_NAME@_COMPONENTS @PROJECT_COMPONENTS@)
 
 # Import these packages to process dependencies correctly.
 foreach(bunsan_package @BUNSAN_PACKAGE_REGISTRY@)
