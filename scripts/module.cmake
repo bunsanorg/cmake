@@ -35,7 +35,7 @@ function(bunsan_install_module_)
     install(FILES ${MODULE_SCRIPTS} DESTINATION ${MODULE_SCRIPTS_DIR})
 
     configure_file(
-        ModuleBuiltin.cmake.in ${MODULE_NAME}Builtin.cmake
+        ${BunsanCMake_MODULE_ROOT}/ModuleBuiltin.cmake.in ${MODULE_NAME}Builtin.cmake
         @ONLY
     )
     include(${CMAKE_CURRENT_BINARY_DIR}/${MODULE_NAME}Builtin.cmake)
@@ -48,7 +48,9 @@ function(bunsan_install_module_)
     export(PACKAGE ${MODULE_NAME})
 endfunction()
 
+# Should only be used by BunsanCMake itself
 function(bunsan_bootstrap_module)
+    set(BunsanCMake_MODULE_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
     bunsan_install_module_(BOOTSTRAP module.cmake ${ARGN})
 endfunction()
 

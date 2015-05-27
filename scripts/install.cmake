@@ -3,7 +3,6 @@
 include(${CMAKE_CURRENT_LIST_DIR}/install_dirs.cmake)
 
 set(BUNSAN_${PROJECT_NAME}_TARGETS "${BUNSAN_${PROJECT_NAME}_TARGETS}" CACHE INTERNAL "")
-set(BUNSAN_CMAKE_SCRIPTS_DIR ${CMAKE_CURRENT_LIST_DIR} CACHE INTERNAL "")
 
 function(bunsan_install_register_targets)
     foreach(target ${ARGN})
@@ -35,8 +34,6 @@ function(bunsan_install_project)
     endif()
 
     if(need_export)
-        set(PROJECT_MODULE_ROOT ${BUNSAN_CMAKE_SCRIPTS_DIR}/..)
-
         bunsan_get_package_install_path(PROJECT_ROOT ${PROJECT_NAME})
         set(PROJECT_COMPONENTS ${BUNSAN_${PROJECT_NAME}_TARGETS})
         set(PROJECT_CONFIG ${PROJECT_NAME}Config.cmake)
@@ -44,7 +41,7 @@ function(bunsan_install_project)
         set(PROJECT_TARGETS_CONFIG ${PROJECT_TARGETS}.cmake)
         set(PROJECT_TARGETS_INCLUDE ${PROJECT_ROOT}/${PROJECT_TARGETS_CONFIG})
         configure_package_config_file(
-            ${PROJECT_MODULE_ROOT}/Project.cmake.in ${PROJECT_CONFIG}
+            ${BunsanCMake_MODULE_ROOT}/Project.cmake.in ${PROJECT_CONFIG}
             INSTALL_DESTINATION ${PROJECT_ROOT}
             PATH_VARS
                 PROJECT_ROOT
