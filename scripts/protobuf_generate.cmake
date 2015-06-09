@@ -3,6 +3,13 @@ include(${CMAKE_CURRENT_LIST_DIR}/install_dirs.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/install_python_module.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/libraries.cmake)
 
+macro(bunsan_protobuf_find_grpc)
+    find_path(GRPC_INCLUDE_DIRECTORIES grpc++/config.h)
+    find_library(GRPC_LIBRARIES grpc++)
+    find_program(GRPC_CXX_PLUGIN grpc_cpp_plugin)
+    find_program(GRPC_PYTHON_PLUGIN grpc_python_plugin)
+endmacro()
+
 macro(bunsan_protobuf_get_target_includes includes target)
     get_target_property(${includes} ${target} INTERFACE_INCLUDE_DIRECTORIES)
     if(NOT includes)
@@ -56,6 +63,7 @@ endfunction()
 #     PYTHON also build python library
 #     STATIC build static library
 #     SHARED build shared library
+#     GRPC use gRPC plugin
 #
 #     TARGET target-name
 #     INCLUDE_DIRECTORIES some include dirs
@@ -70,7 +78,7 @@ function(bunsan_add_protobuf_cxx_library)
     bunsan_find_package(Protobuf REQUIRED)
 
     string(SHA1 call_hash "${ARGN}")
-    set(options INSTALL PYTHON STATIC SHARED)
+    set(options INSTALL PYTHON STATIC SHARED GRPC)
     set(one_value_args
         TARGET
         HEADERS SOURCES PYTHON_SOURCES DESCRIPTOR_SET DESCRIPTOR_SET_FILENAME
@@ -107,6 +115,12 @@ function(bunsan_add_protobuf_cxx_library)
         list(APPEND plugins "--plugin=protoc-gen-${plugin}" "--${plugin_name}_out=${cpp_params}${proto_dst}")
     endforeach()
 
+    # gRPC
+    if(ARG_GRPC)
+        bunsan_protobuf_find_grpc()
+        list(APPEND plugins "--plugin=protoc-gen-grpc=${GRPC_CXX_PLUGIN}" "--grpc_out=${cpp_params}${proto_dst}")
+    endif()
+
     # compose descriptor set
     set(descriptor_set_dir ${proto_dst}/${call_hash})
     if(ARG_DESCRIPTOR_SET_FILENAME)
@@ -123,6 +137,8 @@ function(bunsan_add_protobuf_cxx_library)
         set(path_we ${dirname}/${filename_we})
         set(hdr ${proto_dst}/${path_we}.pb.h)
         set(src ${proto_dst}/${path_we}.pb.cc)
+        set(grpc_hdr ${proto_dst}/${path_we}.grpc.pb.h)
+        set(grpc_src ${proto_dst}/${path_we}.grpc.pb.cc)
         set(prt ${proto_src}/${proto})
         set(pysrc ${proto_dst}/${path_we}_pb2.py)
         list(APPEND hdrs_ ${hdr})
@@ -130,10 +146,18 @@ function(bunsan_add_protobuf_cxx_library)
         if(ARG_PYTHON)
             list(APPEND python_srcs_ ${pysrc})
         endif()
+        if(ARG_GRPC)
+            list(APPEND hdrs_ ${grpc_hdr})
+            list(APPEND srcs_ ${grpc_src})
+        endif()
         list(APPEND protos_ ${prt})
         if(ARG_INSTALL)
             install(FILES ${hdr}
                     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${dirname})
+            if(ARG_GRPC)
+                install(FILES ${grpc_hdr}
+                        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${dirname})
+            endif()
             if(ARG_PYTHON)
                 bunsan_install_python_module_file(MODULE ${path_we}_pb2 FILE ${pysrc})
             endif()
@@ -180,6 +204,10 @@ function(bunsan_add_protobuf_cxx_library)
             ${Protobuf_LIBRARIES}
             ${ARG_LIBRARIES}
     )
+    if(ARG_GRPC)
+        target_include_directories(${ARG_TARGET} PUBLIC ${GRPC_INCLUDE_DIRECTORIES})
+        target_link_libraries(${ARG_TARGET} PUBLIC ${GRPC_LIBRARIES})
+    endif()
 
     # exports
     if(ARG_HEADERS)
