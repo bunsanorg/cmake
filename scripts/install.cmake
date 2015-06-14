@@ -14,14 +14,25 @@ function(bunsan_install_register_targets)
     endforeach()
 endfunction()
 
-macro(bunsan_install_targets)
+macro(bunsan_install_targets_prepare)
     bunsan_install_register_targets(${ARGN})
     bunsan_targets_finish_setup(${ARGN})
+endmacro()
+
+macro(bunsan_install_targets)
+    bunsan_install_targets_prepare(${ARGN})
     install(TARGETS ${ARGN}
         EXPORT ${PROJECT_NAME}Targets
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+endmacro()
+
+macro(bunsan_install_targets_to destination)
+    bunsan_install_targets_prepare(${ARGN})
+    install(TARGETS ${ARGN}
+        EXPORT ${PROJECT_NAME}Targets
+        DESTINATION ${destination})
 endmacro()
 
 include(CMakePackageConfigHelpers)
