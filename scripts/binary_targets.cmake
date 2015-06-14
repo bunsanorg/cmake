@@ -51,3 +51,10 @@ endfunction()
 function(bunsan_add_static_library target)
     bunsan_add_library(${target} STATIC ${ARGN})
 endfunction()
+
+function(bunsan_add_module_library target)
+    # Does not support BUNSAN_STATIC_INITIALIZER_GENERATOR.
+    # This target is always PIC, and it may not depend on non-PIC (non-SHARED) libraries.
+    add_library(${target} MODULE ${ARGN})
+    set_target_properties(${target} PROPERTIES BUNSAN_TARGET ON)
+endfunction()
