@@ -38,6 +38,9 @@ macro(bunsan_find_bunsan_package package)
 endmacro()
 
 macro(bunsan_use_target target package)
+    if(NOT TARGET ${package})
+        message(SEND_ERROR "${package} is not a target!")
+    endif()
     target_link_libraries(${target} PUBLIC ${package})
 endmacro()
 
