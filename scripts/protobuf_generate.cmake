@@ -28,6 +28,7 @@ macro(bunsan_protobuf_append_proto_paths var)
     foreach(proto_path ${ARGN})
         list(APPEND ${var} --proto_path=${proto_path})
     endforeach()
+    list(REMOVE_DUPLICATES ${var})
 endmacro()
 
 macro(bunsan_protobuf_include_directories target visibility)
