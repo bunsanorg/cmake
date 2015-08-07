@@ -21,6 +21,7 @@ bunsan_bootstrap_module(
         Project.cmake.in
         StaticInitializer.cpp.in
         StaticInitializerCall.cpp.in
+    INCLUDES modules
 )
 
 bunsan_install_project()
