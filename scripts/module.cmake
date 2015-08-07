@@ -8,7 +8,7 @@ include(CMakeParseArguments)
 function(bunsan_install_module_)
     set(options)
     set(one_value_args NAME TEMPLATE BOOTSTRAP)
-    set(multi_value_args DIRECTORIES FILES SCRIPTS)
+    set(multi_value_args DIRECTORIES FILES INCLUDES SCRIPTS)
     cmake_parse_arguments(MODULE "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
     bunsan_get_package_install_path(MODULE_ROOT ${MODULE_NAME})
@@ -18,6 +18,17 @@ function(bunsan_install_module_)
     endif()
     set(MODULE_CONFIG ${MODULE_NAME}Config.cmake)
 
+    foreach(dir ${MODULE_DIRECTORIES})
+        install(DIRECTORY ${dir} DESTINATION ${MODULE_SCRIPTS_DIR})
+    endforeach()
+    install(FILES ${MODULE_FILES} DESTINATION ${MODULE_ROOT})
+    set(MODULE_INCLUDE_NAMES)
+    foreach(dir ${MODULE_INCLUDES})
+        install(DIRECTORY ${dir} DESTINATION ${MODULE_ROOT})
+        get_filename_component(name ${dir} NAME)
+        list(APPEND MODULE_INCLUDE_NAMES ${name})
+    endforeach()
+    install(FILES ${MODULE_SCRIPTS} DESTINATION ${MODULE_SCRIPTS_DIR})
     configure_package_config_file(
         ${MODULE_TEMPLATE} ${MODULE_CONFIG}
         INSTALL_DESTINATION ${MODULE_ROOT}
@@ -27,12 +38,6 @@ function(bunsan_install_module_)
     )
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${MODULE_CONFIG}
             DESTINATION ${MODULE_ROOT})
-
-    foreach(dir ${MODULE_DIRECTORIES})
-        install(DIRECTORY ${dir} DESTINATION ${MODULE_SCRIPTS_DIR})
-    endforeach()
-    install(FILES ${MODULE_FILES} DESTINATION ${MODULE_ROOT})
-    install(FILES ${MODULE_SCRIPTS} DESTINATION ${MODULE_SCRIPTS_DIR})
 
     configure_file(
         ${BunsanCMake_MODULE_ROOT}/ModuleBuiltin.cmake.in ${MODULE_NAME}Builtin.cmake
@@ -44,6 +49,8 @@ function(bunsan_install_module_)
     file(COPY ${MODULE_DIRECTORIES} ${MODULE_SCRIPTS}
          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/scripts)
     file(COPY ${MODULE_FILES}
+         DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+    file(COPY ${MODULE_INCLUDES}
          DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
     export(PACKAGE ${MODULE_NAME})
 endfunction()
