@@ -1,4 +1,5 @@
 # TODO refactoring needed
+include(${CMAKE_CURRENT_LIST_DIR}/common.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/install_dirs.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/install_python_module.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/libraries.cmake)
@@ -28,10 +29,7 @@ macro(bunsan_protobuf_append_proto_paths var)
     foreach(proto_path ${ARGN})
         list(APPEND ${var} --proto_path=${proto_path})
     endforeach()
-    list(LENGTH ${var} bunsan_protobuf_append_proto_paths_length)
-    if(bunsan_protobuf_append_proto_paths_length GREATER 0)
-        list(REMOVE_DUPLICATES ${var})
-    endif()
+    bunsan_list_remove_duplicates(${var})
 endmacro()
 
 macro(bunsan_protobuf_include_directories target visibility)
