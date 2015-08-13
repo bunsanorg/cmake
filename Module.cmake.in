@@ -11,7 +11,7 @@ endif()
 @MODULE_BOOTSTRAP@
 bunsan_load_modules(${@MODULE_NAME@_MODULE_SCRIPTS_DIR})
 foreach(module @MODULE_INCLUDE_NAMES@)
-    message("-- Adding ${@MODULE_NAME@_MODULE_ROOT}/${module} to CMAKE_MODULE_PATH")
+    message(STATUS "Adding ${@MODULE_NAME@_MODULE_ROOT}/${module} to CMAKE_MODULE_PATH")
     list(APPEND CMAKE_MODULE_PATH ${@MODULE_NAME@_MODULE_ROOT}/${module})
 endforeach()
 bunsan_list_remove_duplicates(CMAKE_MODULE_PATH)

@@ -39,16 +39,16 @@ endmacro()
 
 # \param ARGN other dependencies
 function(bunsan_add_imported_library target type prefix)
-    message("-- Added ${type} library ${target}")
-    message("--   Includes: ${${prefix}_INCLUDE_DIRS}")
+    message(STATUS "Added ${type} library ${target}")
+    message(STATUS "  Includes: ${${prefix}_INCLUDE_DIRS}")
     add_library(${target} ${type} IMPORTED GLOBAL)
     list(GET ${prefix}_LIBRARIES 0 location)
     get_filename_component(soname ${location} NAME)
     set(deps ${${prefix}_LIBRARIES} ${ARGN})
     list(REMOVE_AT deps 0)
-    message("--   Dependencies: ${deps}")
-    message("--   Location: ${location}")
-    message("--   Soname: ${soname}")
+    message(STATUS "  Dependencies: ${deps}")
+    message(STATUS "  Location: ${location}")
+    message(STATUS "  Soname: ${soname}")
     set_target_properties(${target} PROPERTIES
         IMPORTED_LOCATION "${location}"
         IMPORTED_SONAME "${soname}"

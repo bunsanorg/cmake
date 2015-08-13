@@ -74,7 +74,7 @@ endfunction()
 function(bunsan_install_python_module_compile_one pyfile)
     string(REPLACE ";" " " pyflags "${ARGN}")
     install(CODE "
-        message(\"-- Compiling python source [${ARGN}]: ${pyfile}\")
+        message(STATUS \"Compiling python source [${ARGN}]: ${pyfile}\")
         set(pyfile \"\$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${pyfile}\")
         execute_process(
             COMMAND ${PYTHON_EXECUTABLE} ${pyflags} -m py_compile \${pyfile}

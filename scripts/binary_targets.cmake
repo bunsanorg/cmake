@@ -57,4 +57,7 @@ function(bunsan_add_module_library target)
     # This target is always PIC, and it may not depend on non-PIC (non-SHARED) libraries.
     add_library(${target} MODULE ${ARGN})
     set_target_properties(${target} PROPERTIES BUNSAN_TARGET ON)
+    if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_GNUCC)
+        target_compile_options(${target} PUBLIC -fvisibility=hidden)
+    endif()
 endfunction()

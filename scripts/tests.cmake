@@ -41,7 +41,7 @@ endmacro()
 # exports empty ${bunsan_tests_targets},
 # ${bunsan_tests_sources} and ${BUNSAN_TESTS}
 macro(bunsan_tests_project_header)
-    message("-- Tests were enabled")
+    message(STATUS "Tests were enabled")
     get_filename_component(BUNSAN_TESTS_PARENT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)
     get_filename_component(BUNSAN_TESTS_PARENT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR} DIRECTORY)
     set(BUNSAN_TESTS_ENV
