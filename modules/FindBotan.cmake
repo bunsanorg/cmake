@@ -51,26 +51,18 @@ if(Botan_EXECUTABLE)
     endforeach()
 
     find_library(Botan_LOCATION ${Botan_LIBNAME} PATHS ${Botan_LIBDIRS})
-
-    add_library(Botan SHARED IMPORTED)
-    set_target_properties(Botan
-        PROPERTIES
-            IMPORTED_LOCATION "${Botan_LOCATION}"
-            INTERFACE_INCLUDE_DIRECTORIES "${Botan_INCLUDE_DIRS}"
-            INTERFACE_LINK_LIBRARIES "${Botan_LIBRARIES}"
-    )
     message("-- Found Botan-${Botan_VERSION}")
     message("--   Location: ${Botan_LOCATION}")
     message("--   Includes: ${Botan_INCLUDE_DIRS}")
     message("--   Dependencies: ${Botan_LIBRARIES}")
-    set(Botan_INCLUDE_DIRS)
-    set(Botan_LIBRARIES Botan)
+    list(APPEND Botan_LIBRARIES ${Botan_LOCATION})
 endif()
 
 include(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(Botan
     REQUIRED_VARS
         Botan_EXECUTABLE
+        Botan_INCLUDE_DIRS
         Botan_LIBRARIES
     VERSION_VAR Botan_VERSION
 )
