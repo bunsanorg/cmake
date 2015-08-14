@@ -98,8 +98,8 @@ endfunction()
 function(bunsan_install_python_module_init)
     bunsan_install_python_module_common(INIT ${ARGN})
 
-    install(FILES ${ARG_INIT} DESTINATION ${module_directory} RENAME __init__.py)
-    bunsan_install_python_module_compile(${module_directory}/__init__.py)
+    install(FILES ${ARG_INIT} DESTINATION ${module_path} RENAME __init__.py)
+    bunsan_install_python_module_compile(${module_path}/__init__.py)
 endfunction()
 
 function(bunsan_install_python_module_file)
