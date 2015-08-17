@@ -1,8 +1,10 @@
 function(bunsan_get_install_python_path path)
-    set(python_version ${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR})
-
     if(UNIX)
+        set(python_version ${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR})
         set(${path} lib/python${python_version}/site-packages PARENT_SCOPE)
+    elseif(WIN32)
+        set(python_version ${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
+        set(${path} Python${python_version}/Lib/site-packages PARENT_SCOPE)
     else()
         message(SEND_ERROR "Environment is not supported.")
     endif()
