@@ -8,6 +8,7 @@ macro(bunsan_targets_finish_setup)
                 ${target}
                 INTERFACE
                     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+                    $<INSTALL_INTERFACE:${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}>
             )
         endif()
         if(NOT BUILD_SHARED_LIBS)
