@@ -203,13 +203,13 @@ function(bunsan_add_protobuf_cxx_library)
     bunsan_add_library(${ARG_TARGET} ${libtype} ${hdrs_} ${srcs_})
     bunsan_protobuf_include_directories(${ARG_TARGET}
         PUBLIC
-            ${Protobuf_INCLUDE_DIRECTORIES}
+            ${PROTOBUF_INCLUDE_DIRS}
             ${ARG_INCLUDE_DIRECTORIES}
             $<BUILD_INTERFACE:${proto_dst}>
     )
     bunsan_protobuf_link_libraries(${ARG_TARGET}
         PUBLIC
-            ${Protobuf_LIBRARIES}
+            ${PROTOBUF_LIBRARIES}
             ${ARG_LIBRARIES}
     )
     if(ARG_GRPC)
