@@ -114,13 +114,19 @@ function(bunsan_add_protobuf_cxx_library)
     foreach(plugin ${ARG_PLUGINS})
         string(FIND ${plugin} "=" eqpos)
         string(SUBSTRING ${plugin} 0 ${eqpos} plugin_name)
-        list(APPEND plugins "--plugin=protoc-gen-${plugin}" "--${plugin_name}_out=${cpp_params}${proto_dst}")
+        list(APPEND plugins
+            "--plugin=protoc-gen-${plugin}"
+            "--${plugin_name}_out=${cpp_params}${proto_dst}"
+        )
     endforeach()
 
     # gRPC
     if(ARG_GRPC)
         bunsan_protobuf_find_grpc()
-        list(APPEND plugins "--plugin=protoc-gen-grpc=${GRPC_CXX_PLUGIN}" "--grpc_out=${cpp_params}${proto_dst}")
+        list(APPEND plugins
+            "--plugin=protoc-gen-grpc=${GRPC_CXX_PLUGIN}"
+            "--grpc_out=${cpp_params}${proto_dst}"
+        )
     endif()
 
     # compose descriptor set
