@@ -34,7 +34,6 @@ function(bunsan_install_module_)
         INSTALL_DESTINATION ${MODULE_ROOT}
         PATH_VARS
             MODULE_ROOT
-            MODULE_SCRIPTS_DIR
     )
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${MODULE_CONFIG}
             DESTINATION ${MODULE_ROOT})
