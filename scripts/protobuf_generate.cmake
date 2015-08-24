@@ -4,13 +4,6 @@ include(${CMAKE_CURRENT_LIST_DIR}/install_dirs.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/install_python_module.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/libraries.cmake)
 
-macro(bunsan_protobuf_find_grpc)
-    find_path(GRPC_INCLUDE_DIRECTORIES grpc++/config.h)
-    find_library(GRPC_LIBRARIES grpc++)
-    find_program(GRPC_CXX_PLUGIN grpc_cpp_plugin)
-    find_program(GRPC_PYTHON_PLUGIN grpc_python_plugin)
-endmacro()
-
 macro(bunsan_protobuf_get_target_includes includes target)
     get_target_property(${includes} ${target} INTERFACE_INCLUDE_DIRECTORIES)
     if(NOT includes)
@@ -122,9 +115,9 @@ function(bunsan_add_protobuf_cxx_library)
 
     # gRPC
     if(ARG_GRPC)
-        bunsan_protobuf_find_grpc()
+        find_package(Grpc REQUIRED)
         list(APPEND plugins
-            "--plugin=protoc-gen-grpc=${GRPC_CXX_PLUGIN}"
+            "--plugin=protoc-gen-grpc=${Grpc_CXX_PLUGIN}"
             "--grpc_out=${cpp_params}${proto_dst}"
         )
     endif()
@@ -213,8 +206,8 @@ function(bunsan_add_protobuf_cxx_library)
             ${ARG_LIBRARIES}
     )
     if(ARG_GRPC)
-        target_include_directories(${ARG_TARGET} PUBLIC ${GRPC_INCLUDE_DIRECTORIES})
-        target_link_libraries(${ARG_TARGET} PUBLIC ${GRPC_LIBRARIES})
+        target_include_directories(${ARG_TARGET} PUBLIC ${Grpc_INCLUDE_DIRS})
+        target_link_libraries(${ARG_TARGET} PUBLIC ${Grpc_LIBRARIES})
     endif()
 
     # exports
