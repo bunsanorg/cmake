@@ -3,14 +3,16 @@ set(BUNSAN_GO_FLAGS "" CACHE STRING "")
 set(BUNSAN_GO_LINK_FLAGS "" CACHE STRING "")
 
 set(bunsan_go_stage_dir ${CMAKE_BINARY_DIR}/bunsan_golang)
-set(bunsan_go_objdir ${bunsan_go_stage_dir}/obj)
+set(bunsan_go_bindir ${bunsan_go_stage_dir}/bin)
 set(bunsan_go_libdir ${bunsan_go_stage_dir}/lib)
+set(bunsan_go_objdir ${bunsan_go_stage_dir}/obj)
 set(bunsan_go_gendeps_source ${CMAKE_CURRENT_LIST_DIR}/golang_gendeps.go)
 set(bunsan_go_gendeps ${bunsan_go_stage_dir}/gendeps${CMAKE_EXECUTABLE_SUFFIX})
 
 macro(bunsan_go_init)
     # Stage is global since packages are considered global
     file(MAKE_DIRECTORY ${bunsan_go_stage_dir})
+    file(MAKE_DIRECTORY ${bunsan_go_bindir})
     file(MAKE_DIRECTORY ${bunsan_go_libdir})
     file(MAKE_DIRECTORY ${bunsan_go_objdir})
 
@@ -101,7 +103,9 @@ function(bunsan_add_go_executable TARGET PATH)
     bunsan_go_init()
 
     bunsan_add_go_objects(${PATH} objects ${ARGN})
-    set(executable ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}${CMAKE_EXECUTABLE_SUFFIX})
+    # FIXME we can't use CMAKE_CURRENT_BINARY_DIR here because executable
+    # and file may be equal
+    set(executable ${bunsan_go_bindir}/${TARGET}${CMAKE_EXECUTABLE_SUFFIX})
     add_custom_command(OUTPUT ${executable}
         COMMAND ${BUNSAN_GO_TOOL} tool link
             -L ${bunsan_go_libdir}
