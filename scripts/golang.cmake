@@ -5,12 +5,26 @@ set(BUNSAN_GO_LINK_FLAGS "" CACHE STRING "")
 set(bunsan_go_stage_dir ${CMAKE_BINARY_DIR}/bunsan_golang)
 set(bunsan_go_objdir ${bunsan_go_stage_dir}/obj)
 set(bunsan_go_libdir ${bunsan_go_stage_dir}/lib)
+set(bunsan_go_gendeps_source ${CMAKE_CURRENT_LIST_DIR}/golang_gendeps.go)
+set(bunsan_go_gendeps ${bunsan_go_stage_dir}/gendeps${CMAKE_EXECUTABLE_SUFFIX})
 
 macro(bunsan_go_init)
     # Stage is global since packages are considered global
     file(MAKE_DIRECTORY ${bunsan_go_stage_dir})
     file(MAKE_DIRECTORY ${bunsan_go_libdir})
     file(MAKE_DIRECTORY ${bunsan_go_objdir})
+
+    if(NOT EXISTS ${bunsan_go_gendeps})
+        execute_process(
+            COMMAND ${BUNSAN_GO_TOOL} build
+                -o ${bunsan_go_gendeps}
+                ${bunsan_go_gendeps_source}
+            RESULT_VARIABLE gendeps_result
+        )
+        if(NOT gendeps_result EQUAL 0)
+            message(SEND_ERROR "Unable to build Go dependencies generator")
+        endif()
+    endif()
 endmacro()
 
 macro(bunsan_make_go_target_name NAME PATH)
@@ -25,13 +39,33 @@ function(bunsan_add_go_object PATH SOURCE OBJECT)
     set(objdir ${bunsan_go_objdir}/${PATH})
     file(MAKE_DIRECTORY ${objdir})
     set(object ${objdir}/${basename}${CMAKE_C_OUTPUT_EXTENSION})
+
+    execute_process(
+        COMMAND ${bunsan_go_gendeps} --source=${SOURCE}
+        RESULT_VARIABLE gendeps_result
+        OUTPUT_VARIABLE gendeps_output
+    )
+    if(NOT gendeps_result EQUAL 0)
+        message(SEND_ERROR "Unable to parse Go dependencies for ${SOURCE}")
+    endif()
+    separate_arguments(gendeps_output UNIX_COMMAND "${gendeps_output}")
+    set(dependencies)
+    foreach(dep ${gendeps_output})
+        bunsan_make_go_target_name(target ${dep})
+        if(TARGET ${target})
+            list(APPEND dependencies ${target})
+        endif()
+    endforeach()
+
     add_custom_command(OUTPUT ${object}
         COMMAND ${BUNSAN_GO_TOOL} tool compile
             -I ${bunsan_go_libdir}
             ${BUNSAN_GO_FLAGS}
             -o ${object}
             ${SOURCE}
+        DEPENDS ${dependencies}
     )
+
     set(${OBJECT} ${object} PARENT_SCOPE)
 endfunction()
 
@@ -67,12 +101,7 @@ function(bunsan_add_go_executable TARGET PATH)
     bunsan_go_init()
 
     bunsan_add_go_objects(${PATH} objects ${ARGN})
-
-    set(executable ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
-    if(WIN32)
-        set(executable ${executable}.exe)
-    endif()
-
+    set(executable ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}${CMAKE_EXECUTABLE_SUFFIX})
     add_custom_command(OUTPUT ${executable}
         COMMAND ${BUNSAN_GO_TOOL} tool link
             -L ${bunsan_go_libdir}
@@ -80,6 +109,5 @@ function(bunsan_add_go_executable TARGET PATH)
             ${objects}
         DEPENDS ${objects}
     )
-    # TODO library dependencies
     add_custom_target(${TARGET} ALL DEPENDS ${executable})
 endfunction()
