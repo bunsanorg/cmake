@@ -123,8 +123,9 @@ function(bunsan_add_protobuf_generate)
     set(one_value_args
         TARGET
         SOURCE_PREFIX BINARY_PREFIX
+        OUTPUT
     )
-    set(multi_value_args PLUGINS PROTOS PROTO_PATHS PLUGIN_PARAMS OUTPUT)
+    set(multi_value_args PLUGINS PROTOS PROTO_PATHS PLUGIN_PARAMS)
     cmake_parse_arguments(ARG "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
     file(MAKE_DIRECTORY ${ARG_BINARY_PREFIX})
