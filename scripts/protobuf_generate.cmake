@@ -77,10 +77,11 @@ function(bunsan_add_protobuf_cxx_library)
     set(one_value_args
         TARGET
         HEADERS SOURCES PYTHON_SOURCES DESCRIPTOR_SET DESCRIPTOR_SET_FILENAME
-        INCLUDE_DIRECTORIES LIBRARIES
         EXPORT_MACRO_NAME
     )
-    set(multi_value_args PROTOS PLUGINS)
+    set(multi_value_args PROTOS PLUGINS
+        INCLUDE_DIRECTORIES LIBRARIES
+    )
     cmake_parse_arguments(ARG "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
     set(proto_src ${CMAKE_CURRENT_SOURCE_DIR}/include)
