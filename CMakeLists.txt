@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 
 include(${CMAKE_SOURCE_DIR}/system-config.cmake OPTIONAL)
 
-project(bunsan_cmake)
+project(bunsan_cmake NONE)
 
 # This project is common dependency.
 # Other bunsan projects should assume that
