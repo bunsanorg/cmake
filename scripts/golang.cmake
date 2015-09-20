@@ -65,7 +65,7 @@ function(bunsan_add_go_object PATH SOURCE OBJECT)
             ${BUNSAN_GO_FLAGS}
             -o ${object}
             ${SOURCE}
-        DEPENDS ${dependencies}
+        DEPENDS ${dependencies} ${SOURCE}
     )
 
     set(${OBJECT} ${object} PARENT_SCOPE)
