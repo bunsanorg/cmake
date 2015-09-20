@@ -42,22 +42,25 @@ function(bunsan_add_go_object PATH SOURCE OBJECT)
     file(MAKE_DIRECTORY ${objdir})
     set(object ${objdir}/${basename}${CMAKE_C_OUTPUT_EXTENSION})
 
-    execute_process(
-        COMMAND ${bunsan_go_gendeps} --source=${SOURCE}
-        RESULT_VARIABLE gendeps_result
-        OUTPUT_VARIABLE gendeps_output
-    )
-    if(NOT gendeps_result EQUAL 0)
-        message(SEND_ERROR "Unable to parse Go dependencies for ${SOURCE}")
-    endif()
-    separate_arguments(gendeps_output UNIX_COMMAND "${gendeps_output}")
     set(dependencies)
-    foreach(dep ${gendeps_output})
-        bunsan_make_go_target_name(target ${dep})
-        if(TARGET ${target})
-            list(APPEND dependencies ${target})
+    get_property(generated SOURCE ${SOURCE} PROPERTY GENERATED)
+    if(NOT generated)
+        execute_process(
+            COMMAND ${bunsan_go_gendeps} --source=${SOURCE}
+            RESULT_VARIABLE gendeps_result
+            OUTPUT_VARIABLE gendeps_output
+        )
+        if(NOT gendeps_result EQUAL 0)
+            message(SEND_ERROR "Unable to parse Go dependencies for ${SOURCE}")
         endif()
-    endforeach()
+        separate_arguments(gendeps_output UNIX_COMMAND "${gendeps_output}")
+        foreach(dep ${gendeps_output})
+            bunsan_make_go_target_name(target ${dep})
+            if(TARGET ${target})
+                list(APPEND dependencies ${target})
+            endif()
+        endforeach()
+    endif()
 
     add_custom_command(OUTPUT ${object}
         COMMAND ${BUNSAN_GO_TOOL} tool compile
