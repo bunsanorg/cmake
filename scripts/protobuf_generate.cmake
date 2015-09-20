@@ -76,7 +76,7 @@ function(bunsan_protobuf_get_names)
     elseif(ARG_PLUGIN STREQUAL grpc_python)
         set(output) # merged with python
     elseif(ARG_PLUGIN STREQUAL go)
-        set(output ${path_we}.go)
+        set(output ${path_we}.pb.go)
     else()
         message(SEND_ERROR "Unknown protoc plugin ${ARG_PLUGIN}")
     endif()
