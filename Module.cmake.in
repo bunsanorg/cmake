@@ -8,6 +8,9 @@ endif()
 set(@MODULE_NAME@_MODULE_SCRIPTS_DIR ${@MODULE_NAME@_MODULE_ROOT}/scripts)
 
 @MODULE_BOOTSTRAP@
+
+@MODULE_DEPENDENCIES_LOAD@
+
 if(EXISTS ${@MODULE_NAME@_MODULE_SCRIPTS_DIR})
     bunsan_load_modules(${@MODULE_NAME@_MODULE_SCRIPTS_DIR})
 endif()
@@ -18,3 +21,5 @@ endforeach()
 bunsan_list_remove_duplicates(CMAKE_MODULE_PATH)
 
 check_required_components(@MODULE_NAME@)
+
+set(@MODULE_NAME@Loaded ON)
